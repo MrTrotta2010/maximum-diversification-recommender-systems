@@ -109,7 +109,7 @@ void loadPred(string predFile, HashOfHashes &hashPred, VectorOfUser &userPred, i
 
 void loadFeature(string featureFile, VectorOfUser &hashFeature);
 
-void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData);
+void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData, int *maxUserID);
 
 void loadTestData(string testFile, HashOfHashes &testData);
 

@@ -6,7 +6,7 @@ int MAX_RATING;
 
 int main(int argc, char **argv)
 {
-	string predFileName = "../../Recommendations-Lists/rec_itemKNN_conv.txt";
+	string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/rec_userKNN_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/rec_MostPopular_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/rec_WRMF_conv.txt";
@@ -16,8 +16,10 @@ int main(int argc, char **argv)
 	int numPreds = 100;
 	int swarmSize = 30;
 	int particleSize = 10;
-	float alfa = 0.5;
+	float alfa = atof(argv[1]);
+	printf("%f\n", alfa);
 	int iter_max = 100;
+	int maxUserID;
 
 	std::ifstream file;
 	srand(time(NULL));
@@ -41,7 +43,7 @@ int main(int argc, char **argv)
 
 	std::cout << "loading training data...\n"
 			  << flush;
-	loadTrainData(trainFileName, itemRatings, trainData);
+	loadTrainData(trainFileName, itemRatings, trainData, &maxUserID);
 
 	std::cout << "loading feature data...\n"
 			  << flush;
@@ -62,7 +64,7 @@ int main(int argc, char **argv)
 		cout << "Teste " << i << "\n";
 
 		//int userId = hashPred.begin()->first;
-		for (int userId = 1; userId <= 500; userId++){
+		for (int userId = 1; userId <= maxUserID; userId++){
 			gbestUser[userId] = PSO_Discreet(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, numPreds, alfa, iter_max, swarmSize, particleSize);
 			PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId]);
 			vecPrint.push_back(printData);
@@ -73,8 +75,8 @@ int main(int argc, char **argv)
 		//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
 		//}
 
-		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/alfa05/WRMF/Teste"+std::to_string(i)+"/eval.txt");
-		writeToFile(hashPred, gbestUser, "../../Evaluations/MDRS_Output/alfa05/WRMF/Teste"+std::to_string(i)+"/rec.txt");
+		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/alfa"+std::to_string(alfa)+"/itemKNN/Teste"+std::to_string(i)+"/eval.txt");
+		writeToFile(hashPred, gbestUser, "../../Evaluations/MDRS_Output/alfa"+std::to_string(alfa)+"/itemKNN/Teste"+std::to_string(i)+"/rec.txt");
 	}
 
 	// print gbest of userId
@@ -758,7 +760,7 @@ void loadFeature(string featureFile, VectorOfUser &hashFeature)
 	file.close();
 }
 
-void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData)
+void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData, int *maxUserID)
 {
 	std::ifstream file;
 	std::string line;
@@ -766,6 +768,7 @@ void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &tr
 	float rating;
 	std::vector<std::string> vetor;
 	int userId;
+	int max = 1;
 
 	file.open(trainFile);
 
@@ -791,11 +794,15 @@ void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &tr
 		if (rating > MAX_RATING)
 			MAX_RATING = rating;
 
+		if (userId > max)
+			max = userId;
+
 		itemRatings[itemId][userId] = rating;
 		trainData[userId][itemId] = rating;
 	}
 
 	file.close();
+	(*maxUserID) = max;
 }
 
 void loadTestData(string testFile, HashOfHashes &testData)

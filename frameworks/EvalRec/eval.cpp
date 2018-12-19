@@ -6,10 +6,10 @@ int MAX_RATING;
 
 int main(int argc, char **argv)
 {
-	//string predFileName = "../../Recommendations-Lists/rec_itemKNN_10_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/rec_userKNN_10_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/rec_MostPopular_10_conv.txt";
-	string predFileName = "../../Recommendations-Lists/rec_WRMF_10_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_10_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_userKNN_10_conv.txt";
+	string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_WRMF_10_conv.txt";
 	string trainFileName = "../../Datasets/ML-1M/ratings_train.txt";
 	string testFileName = "../../Datasets/ML-1M/ratings_test.txt";
 	string featureFileName = "../../Datasets/ML-1M/featuresItems.txt";
@@ -47,7 +47,8 @@ int main(int argc, char **argv)
 
 	vector<PrintData> vecPrint;
 
-	for (int userId = 1; userId <= 500; userId++){
+	for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++) {
+		int userId = itrUser->first;
 
 		Particle p;
 		//get pred itens
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
 		// diversify = getILD(testData, p.element, hashSimilarity, itemRatings, userId, numPreds);
 		diversify = getDiv(p.element, hashFeature);
 
-		PrintData printData = findAccuracy(userId, trainData, testData, userPred[userId], diversify);
+		PrintData printData = findAccuracy(userId, trainData, testData, userPred[userId], diversify, hashFeature);
 		vecPrint.push_back(printData);
 
 	}
@@ -74,7 +75,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, vector<int> &vectorPred, float diversify)
+PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, vector<int> &vectorPred, float diversify, VectorOfUser &hashFeature)
 {
 	float userMean = 0;
 	float acc = 0;
@@ -107,7 +108,52 @@ PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testDa
 	acc /= vectorPred.size();
 	accRel /= vectorPred.size();
 
-	return PrintData(userId, acc, accRel, diversify);
+
+	// Vetor de genero do treino
+	vector<int> featureTrain = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	for (auto &&i : trainUser)
+	{
+		vector<int> featureCurrent = hashFeature[i.first];
+		for (unsigned int j = 0; j < featureCurrent.size(); j++)
+		{
+			if ((featureTrain[j] + featureCurrent[j]) >= 1)
+			{
+				if (i.second >= userMean){
+					featureTrain[j] = 1;
+				}
+			}
+			else
+			{
+				featureTrain[j] = 0;
+			}
+		}
+	}
+	// Vetor de genero da Recomendação
+	vector<int> featureFinal = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	for (auto &&e : vectorPred)
+	{
+		vector<int> featureCurrent = hashFeature[e];
+		for (unsigned int i = 0; i < featureCurrent.size(); i++)
+		{
+			if ((featureFinal[i] + featureCurrent[i]) >= 1)
+			{
+				if(featureTrain[i] >= 1){
+					featureFinal[i] = 1;
+				}
+			}
+			else
+			{
+				featureFinal[i] = 0;
+			}
+		}
+	}
+	int sum = 0;
+	for (unsigned int i = 0; i < featureFinal.size(); i++)
+	{
+		sum += featureFinal[i];
+	}
+
+	return PrintData(userId, acc, accRel, diversify, (float)sum / featureFinal.size());
 }
 
 void writeToFile(vector<PrintData>& vecPrint, string filePath)
@@ -117,7 +163,7 @@ void writeToFile(vector<PrintData>& vecPrint, string filePath)
 	{
 		for (auto &&i : vecPrint)
 		{
-			myFile << i.userID << "\t" << i.acc << "\t" << i.accRel << "\t" << i.div << "\n";
+			myFile << i.userID << "\t" << i.acc << "\t" << i.accRel << "\t" << i.div << "\t" << i.divRel << "\n";
 		}
 		myFile.close();
 	}

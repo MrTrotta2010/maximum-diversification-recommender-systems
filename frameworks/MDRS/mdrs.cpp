@@ -19,7 +19,6 @@ int main(int argc, char **argv)
 	float alfa = atof(argv[1]);
 	printf("%f\n", alfa);
 	int iter_max = 100;
-	int maxUserID;
 
 	std::ifstream file;
 	srand(time(NULL));
@@ -43,7 +42,7 @@ int main(int argc, char **argv)
 
 	std::cout << "loading training data...\n"
 			  << flush;
-	loadTrainData(trainFileName, itemRatings, trainData, &maxUserID);
+	loadTrainData(trainFileName, itemRatings, trainData);
 
 	std::cout << "loading feature data...\n"
 			  << flush;
@@ -58,26 +57,33 @@ int main(int argc, char **argv)
 	// }
 
 	// Gera N arquivos de avaliação
-	for(int i = 1; i <= 10; i++){
+	//for(int i = 1; i <= 10; i++){
 		vector<PrintData> vecPrint;
 
-		cout << "Teste " << i << "\n";
-
+//		cout << "Teste " << i << "\n";
 		//int userId = hashPred.begin()->first;
-		for (int userId = 1; userId <= maxUserID; userId++){
+
+		for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++) {
+			int userId = itrUser->first;
+			//cout << userId << "\n";
 			gbestUser[userId] = PSO_Discreet(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, numPreds, alfa, iter_max, swarmSize, particleSize);
-			PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId]);
+			PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId], hashFeature);
 			vecPrint.push_back(printData);
 		}
+
+		//int userId = hashPred.begin()->first;
+		//for (int userId = 1; userId <= maxUserID; userId++){
+
+		//}
 
 		//for (auto &&i : vecPrint)
 		//{
 		//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
 		//}
 
-		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/alfa"+std::to_string(alfa)+"/itemKNN/Teste"+std::to_string(i)+"/eval.txt");
-		writeToFile(hashPred, gbestUser, "../../Evaluations/MDRS_Output/alfa"+std::to_string(alfa)+"/itemKNN/Teste"+std::to_string(i)+"/rec.txt");
-	}
+		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/ML-1M/alfa"+std::to_string(alfa)+"/itemKNN/eval.txt");
+		writeToFile(hashPred, userPred, gbestUser, "../../Evaluations/MDRS_Output/ML-1M/alfa"+std::to_string(alfa)+"/itemKNN/rec.txt");
+	//}
 
 	// print gbest of userId
 	// cout << "\n" << "Gbest of userId: " << userId << "\n";
@@ -92,7 +98,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, GBest &userB)
+PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, GBest &userB, VectorOfUser &hashFeature)
 {
 	float userMean = 0;
 	float acc = 0;
@@ -101,7 +107,7 @@ PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testDa
 	Hash testUser = testData[userId];
 	Hash trainUser = trainData[userId];
 
-	// Média é no treino
+	// Média do rating do treino
 	for (auto &&i : trainUser)
 		userMean += i.second;
 
@@ -125,7 +131,54 @@ PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testDa
 	acc /= userB.element.size();
 	accRel /= userB.element.size();
 
-	return PrintData(userId, acc, accRel, userB.div);
+
+
+	// Vetor de genero do treino
+	vector<int> featureTrain = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	for (auto &&i : trainUser)
+	{
+		vector<int> featureCurrent = hashFeature[i.first];
+		for (unsigned int j = 0; j < featureCurrent.size(); j++)
+		{
+			if ((featureTrain[j] + featureCurrent[j]) >= 1)
+			{
+				if (i.second >= userMean){
+					featureTrain[j] = 1;
+				}
+			}
+			else
+			{
+				featureTrain[j] = 0;
+			}
+		}
+	}
+	// Vetor de genero da Recomendação
+	vector<int> featureFinal = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	for (auto &&e : userB.element)
+	{
+		vector<int> featureCurrent = hashFeature[e.id];
+		for (unsigned int i = 0; i < featureCurrent.size(); i++)
+		{
+			if ((featureFinal[i] + featureCurrent[i]) >= 1)
+			{
+				if(featureTrain[i] >= 1){
+					featureFinal[i] = 1;
+				}
+			}
+			else
+			{
+				featureFinal[i] = 0;
+			}
+		}
+	}
+	int sum = 0;
+	for (unsigned int i = 0; i < featureFinal.size(); i++)
+	{
+		sum += featureFinal[i];
+	}
+
+
+	return PrintData(userId, acc, accRel, userB.div, (float)sum / featureFinal.size());
 }
 
 void writeToFile(vector<PrintData>& vecPrint, string filePath)
@@ -135,26 +188,33 @@ void writeToFile(vector<PrintData>& vecPrint, string filePath)
 	{
 		for (auto &&i : vecPrint)
 		{
-			myFile << i.userID << "\t" << i.acc << "\t" << i.accRel << "\t" << i.div << "\n";
+			//cout << i.userID << "\t" << i.acc << "\t" << i.accRel << "\t" << i.div << "\t" << i.divRel << "\n";
+			myFile << i.userID << "\t" << i.acc << "\t" << i.accRel << "\t" << i.div << "\t" << i.divRel << "\n";
 		}
 		myFile.close();
 	}
 }
 
-void writeToFile(HashOfHashes& hashPred, GBestOfUser& allGBests, string filePath)
+void writeToFile(HashOfHashes& hashPred, VectorOfUser userPred, GBestOfUser& allGBests, string filePath)
 {
 	ofstream myFile(filePath);
 	if (myFile.is_open())
 	{
 		//for (auto&& user : hashPred)
-		for (int userId = 1; userId<= 500; userId++)
+
+//		for (int userId = 1; userId<= 500; userId++)
+		for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++)
 		{
+			int userId = itrUser->first;
 			myFile << userId << "\t";
+			//cout << userId << "\t";
 			for(auto&& element : allGBests[userId].element)
 			{
+				//cout << element.id << ":" << element.pos << "\t";
 				myFile << element.id << ":" << element.pos << "\t";
 			}
 			myFile << "\n";
+			//cout << "\n";
 		}
 		myFile.close();
 	}
@@ -760,7 +820,7 @@ void loadFeature(string featureFile, VectorOfUser &hashFeature)
 	file.close();
 }
 
-void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData, int *maxUserID)
+void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData)
 {
 	std::ifstream file;
 	std::string line;
@@ -768,7 +828,6 @@ void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &tr
 	float rating;
 	std::vector<std::string> vetor;
 	int userId;
-	int max = 1;
 
 	file.open(trainFile);
 
@@ -794,15 +853,11 @@ void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &tr
 		if (rating > MAX_RATING)
 			MAX_RATING = rating;
 
-		if (userId > max)
-			max = userId;
-
 		itemRatings[itemId][userId] = rating;
 		trainData[userId][itemId] = rating;
 	}
 
 	file.close();
-	(*maxUserID) = max;
 }
 
 void loadTestData(string testFile, HashOfHashes &testData)

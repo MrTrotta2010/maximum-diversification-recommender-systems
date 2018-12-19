@@ -60,10 +60,11 @@ struct PrintData
 	float acc;
 	float accRel;
 	float div;
+	float divRel;
 
-	PrintData(): userID(0), acc(0), accRel(0), div(0) { }
-	PrintData(int id, float accuracy, float accuracyRel, float diversity): 
-				userID(id), acc(accuracy), accRel(accuracyRel), div(diversity) { }
+	PrintData(): userID(0), acc(0), accRel(0), div(0), divRel(0) { }
+	PrintData(int id, float accuracy, float accuracyRel, float diversity, float diversityRel): 
+				userID(id), acc(accuracy), accRel(accuracyRel), div(diversity), divRel(diversityRel) { }
 };
 
 /* estrutura que define os parametros para funcao da thread */
@@ -117,7 +118,7 @@ float calculatePearsonSimilarity(int firstItem, int secondItem, HashOfHashes &it
 
 // === Acc and AccRel ===
 
-PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, vector<int> &vectorPred, float diversify);
+PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, vector<int> &vectorPred, float diversify, VectorOfUser &hashFeature);
 
 void writeToFile(vector<PrintData>& vecPrint, string filePath);
 

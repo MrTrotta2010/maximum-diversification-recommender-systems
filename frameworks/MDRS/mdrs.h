@@ -66,10 +66,11 @@ struct PrintData
 	float acc;
 	float accRel;
 	float div;
+	float divRel;
 
-	PrintData(): userID(0), acc(0), accRel(0), div(0) { }
-	PrintData(int id, float accuracy, float accuracyRel, float diversity): 
-				userID(id), acc(accuracy), accRel(accuracyRel), div(diversity) { }
+	PrintData(): userID(0), acc(0), accRel(0), div(0), divRel(0) { }
+	PrintData(int id, float accuracy, float accuracyRel, float diversity, float diversityRel): 
+				userID(id), acc(accuracy), accRel(accuracyRel), div(diversity), divRel(diversityRel) { }
 };
 
 /* estrutura que define os parametros para funcao da thread */
@@ -109,7 +110,7 @@ void loadPred(string predFile, HashOfHashes &hashPred, VectorOfUser &userPred, i
 
 void loadFeature(string featureFile, VectorOfUser &hashFeature);
 
-void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData, int *maxUserID);
+void loadTrainData(string trainFile, HashOfHashes &itemRatings, HashOfHashes &trainData);
 
 void loadTestData(string testFile, HashOfHashes &testData);
 
@@ -127,11 +128,11 @@ float calculatePearsonSimilarity(int firstItem, int secondItem, HashOfHashes &it
 
 // === Acc and AccRel ===
 
-PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, GBest &userB);
+PrintData findAccuracy(int userId, HashOfHashes &trainData, HashOfHashes &testData, GBest &userB, VectorOfUser &hashFeature);
 
 void writeToFile(vector<PrintData>& vecPrint, string filePath);
 
-void writeToFile(HashOfHashes& hashPred, GBestOfUser& allGBests, string filePath);
+void writeToFile(HashOfHashes& hashPred, VectorOfUser userPred, GBestOfUser& allGBests, string filePath);
 
 
 // ============ Funções removidas ============

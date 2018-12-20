@@ -17,7 +17,7 @@ set key at graph 1, 0.8
 set output "acc.eps"		#nome de saida
 set ylabel "Acurácia" offset 1
 set xlabel "Usuários (%)" 
-plot "acc.txt" using ((column(0) / 500) * 100):2 title "MDRS a=0.5" with line lw 10 lc "#000000",\
+plot "acc.txt" using ((column(0) / 500) * 100):2 title "" with line lw 10 lc "#000000",\
 
 #     "1-CDF-NORM.txt" using (($1 / 233096) * 100):5 title "Top 1 state" with linespoints lw 10 pt 70 ps 2 lc "#000000",\
 #	 "3-CDF-NORM.txt" using (($1 / 75072) * 100):5 title "Top 3 state" with linespoints lw 10 pt 71 ps 2 lc "#000000",\
@@ -27,9 +27,14 @@ plot "acc.txt" using ((column(0) / 500) * 100):2 title "MDRS a=0.5" with line lw
 set output "accRel.eps"		#nome de saida
 set ylabel "Acurácia com Relevância" offset 1
 set xlabel "Usuários (%)" 
-plot "acc_Rel.txt" using ((column(0) / 500) * 100):3 title "MDRS a=0.5" with line lw 10 lc "#000000",\
+plot "acc_Rel.txt" using ((column(0) / 500) * 100):3 title "" with line lw 10 lc "#000000",\
 
 set output "div.eps"		#nome de saida
 set ylabel "Diversidade" offset 1
 set xlabel "Usuários (%)" 
-plot "div.txt" using ((column(0) / 500) * 100):4 title "MDRS a=0.5" with line lw 10 lc "#000000",\
+plot "div.txt" using ((column(0) / 500) * 100):4 title "" with line lw 10 lc "#000000",\
+
+set output "divRel.eps"		#nome de saida
+set ylabel "Diversidade com Relevância" offset 1
+set xlabel "Usuários (%)" 
+plot "div.txt" using ((column(0) / 500) * 100):4 title "" with line lw 10 lc "#000000",\

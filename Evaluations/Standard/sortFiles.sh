@@ -1,13 +1,9 @@
+recs=("itemKNN" "userKNN" "WRMF")
 
-d="WRMF"
+for r in "${recs[@]}";
+do
 
-cd $d
-
-#for i in {1..10}
-#for i in `seq 1 10`;
-#do
-
-#	cd Teste$i
+	cd $r
 
 	sudo rm acc.txt
 	sort -f -r -k2 eval.txt > acc.txt
@@ -18,14 +14,18 @@ cd $d
 	sudo rm div.txt
 	sort -f -r -k4 eval.txt > div.txt
 	chmod 777 div.txt
+	sudo rm div_rel.txt
+	sort -f -r -k5 eval.txt > div_rel.txt
+	chmod 777 div_rel.txt
 
-	gnuplot plotEval.gp
-	chmod 777 acc.eps
-	chmod 777 accRel.eps
-	chmod 777 div.eps
+	#gnuplot plotEval.gp
+	#chmod 777 acc.eps
+	#chmod 777 accRel.eps
+	#chmod 777 div.eps
 
-#	cd ..
-#	echo "output: $i"
+	cd ..
+	echo "output: $r"
 
-#done
+done
+
 cd ..

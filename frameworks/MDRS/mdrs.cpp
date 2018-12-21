@@ -6,13 +6,24 @@ int MAX_RATING;
 
 int main(int argc, char **argv)
 {
-	string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/CIAO/rec_userKNN_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/rec_MostPopular_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/CIAO/rec_WRMF_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/CIAO/rec_MostPopular_conv.txt";
+	string predFileName = "../../Recommendations-Lists/CIAO/rec_WRMF_conv.txt";	
+	
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_userKNN_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_WRMF_conv.txt";
+
 	string trainFileName = "../../Datasets/CIAO/CiaoDVD/ratings_train.txt";
 	string testFileName = "../../Datasets/CIAO/CiaoDVD/ratings_test.txt";
 	string featureFileName = "../../Datasets/CIAO/CiaoDVD/featuresItems.txt";
+	
+	/*string trainFileName = "../../Datasets/ML-1M/ratings_train.txt";
+	string testFileName = "../../Datasets/ML-1M/ratings_test.txt";
+	string featureFileName = "../../Datasets/ML-1M/featuresItems.txt";*/
+	
 	int numPreds = 100;
 	int swarmSize = 30;
 	int particleSize = 10;
@@ -81,8 +92,8 @@ int main(int argc, char **argv)
 		//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
 		//}
 
-		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/CIAO/alfa"+std::to_string(alfa)+"/itemKNN/eval.txt");
-		writeToFile(hashPred, userPred, gbestUser, "../../Evaluations/MDRS_Output/CIAO/alfa"+std::to_string(alfa)+"/itemKNN/rec.txt");
+		writeToFile(vecPrint, "../../Evaluations/MDRS_Output/CIAO/alfa"+std::to_string(alfa)+"/WRMF/eval.txt");
+		writeToFile(hashPred, userPred, gbestUser, "../../Evaluations/MDRS_Output/CIAO/alfa"+std::to_string(alfa)+"/WRMF/rec.txt");
 	//}
 
 	// print gbest of userId

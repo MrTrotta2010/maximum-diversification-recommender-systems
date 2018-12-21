@@ -8,12 +8,18 @@ int main(int argc, char **argv)
 {
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_10_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_userKNN_10_conv.txt";
-	string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_WRMF_10_conv.txt";
-	string trainFileName = "../../Datasets/ML-1M/ratings_train.txt";
-	string testFileName = "../../Datasets/ML-1M/ratings_test.txt";
-	string featureFileName = "../../Datasets/ML-1M/featuresItems.txt";
-	int numPreds = 5;
+
+	//string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_10.txt";
+	//string predFileName = "../../Recommendations-Lists/CIAO/rec_userKNN_10.txt";
+	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
+	string predFileName = "../../Recommendations-Lists/CIAO/rec_WRMF_10.txt";
+
+	string trainFileName = "../../Datasets/CIAO/CiaoDVD/ratings_train.txt";
+	string testFileName = "../../Datasets/CIAO/CiaoDVD/ratings_test.txt";
+	string featureFileName = "../../Datasets/CIAO/CiaoDVD/featuresItems.txt";
+	int numPreds = 10;
 
 	std::ifstream file;
 	srand(time(NULL));
@@ -67,10 +73,10 @@ int main(int argc, char **argv)
 
 	}
 
-	//writeToFile(vecPrint, "../../Evaluations/Standard/ItemKNN/eval.txt");
+	//writeToFile(vecPrint, "../../Evaluations/Standard/ML-1M/userKNN/eval.txt");
 	//writeToFile(vecPrint, "../../Evaluations/Standard/UserKNN/eval.txt");
 	//writeToFile(vecPrint, "../../Evaluations/Standard/MostPopular/eval.txt");
-	writeToFile(vecPrint, "../../Evaluations/Standard/WRMF/eval.txt");
+	writeToFile(vecPrint, "../../Evaluations/Standard/CIAO/WRMF/eval.txt");
 
 	return 0;
 }

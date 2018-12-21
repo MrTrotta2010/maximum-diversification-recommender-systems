@@ -1,0 +1,66 @@
+itemKNN
+	Acurácia:
+		Mean: 0.11690397350993796
+		Max: 1.0
+		Min: 0
+		STD: 0.13896739833061236
+	Acurácia com relevância:
+		Mean: 0.0707450331125842
+		Max: 0.8
+		Min: 0
+		STD: 0.10388213468057585
+	Diversidade:
+		Mean: 0.6969554908940406
+		Max: 1.0
+		Min: 0
+		STD: 0.13616841761898354
+	Diversidade com relevância:
+		Mean: 0.5708241417549684
+		Max: 1.0
+		Min: 0
+		STD: 0.16395231909684435
+-----------------------------------------
+userKNN
+	Acurácia:
+		Mean: 0.16061258278146143
+		Max: 1.0
+		Min: 0
+		STD: 0.1741011606690442
+	Acurácia com relevância:
+		Mean: 0.10211920529801628
+		Max: 0.9
+		Min: 0
+		STD: 0.13454170072436494
+	Diversidade:
+		Mean: 0.7974153311258062
+		Max: 1.0
+		Min: 0
+		STD: 0.07835348607217307
+	Diversidade com relevância:
+		Mean: 0.6311166414238418
+		Max: 1.0
+		Min: 0
+		STD: 0.15880685583397158
+-----------------------------------------
+WRMF
+	Acurácia:
+		Mean: 0.15880794701987253
+		Max: 1.0
+		Min: 0
+		STD: 0.17235773345346034
+	Acurácia com relevância:
+		Mean: 0.10552980132450668
+		Max: 1.0
+		Min: 0
+		STD: 0.13558513407479747
+	Diversidade:
+		Mean: 0.7858535301324365
+		Max: 1.0
+		Min: 0
+		STD: 0.08464851583731284
+	Diversidade com relevância:
+		Mean: 0.622691334701986
+		Max: 1.0
+		Min: 0
+		STD: 0.15599015945872508
+-----------------------------------------

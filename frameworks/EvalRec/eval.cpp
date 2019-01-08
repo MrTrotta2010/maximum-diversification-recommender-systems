@@ -6,6 +6,10 @@ int MAX_RATING;
 
 int main(int argc, char **argv)
 {
+
+	string enderecoEntradas = argv[1];
+	string recommender = argv[2];
+
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_10_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_userKNN_10_conv.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
@@ -14,11 +18,11 @@ int main(int argc, char **argv)
 	//string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_10.txt";
 	//string predFileName = "../../Recommendations-Lists/CIAO/rec_userKNN_10.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
-	string predFileName = "../../Recommendations-Lists/CIAO/rec_WRMF_10.txt";
+	string predFileName = "../../Recommendations-Lists/" + enderecoEntradas + "/rec_" + recommender + "_10.txt";
 
-	string trainFileName = "../../Datasets/CIAO/CiaoDVD/ratings_train.txt";
-	string testFileName = "../../Datasets/CIAO/CiaoDVD/ratings_test.txt";
-	string featureFileName = "../../Datasets/CIAO/CiaoDVD/featuresItems.txt";
+	string trainFileName = "../../Datasets/" + enderecoEntradas + "/ratings_train.txt";
+	string testFileName = "../../Datasets/" + enderecoEntradas + "/ratings_test.txt";
+	string featureFileName = "../../Datasets/" + enderecoEntradas + "/featuresItems.txt";
 	int numPreds = 10;
 
 	std::ifstream file;
@@ -76,7 +80,7 @@ int main(int argc, char **argv)
 	//writeToFile(vecPrint, "../../Evaluations/Standard/ML-1M/userKNN/eval.txt");
 	//writeToFile(vecPrint, "../../Evaluations/Standard/UserKNN/eval.txt");
 	//writeToFile(vecPrint, "../../Evaluations/Standard/MostPopular/eval.txt");
-	writeToFile(vecPrint, "../../Evaluations/Standard/CIAO/WRMF/eval.txt");
+	writeToFile(vecPrint, "../../Evaluations/Standard/" + enderecoEntradas + "/" + recommender + "/eval.txt");
 
 	return 0;
 }

@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	//string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_10.txt";
 	//string predFileName = "../../Recommendations-Lists/CIAO/rec_userKNN_10.txt";
 	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_10_conv.txt";
-	string predFileName = "../../Recommendations-Lists/" + enderecoEntradas + "/rec_" + recommender + "_10.txt";
+	string predFileName = "../../Recommendations-Lists/" + enderecoEntradas + "/rec_" + recommender + "_10_conv.txt";
 
 	string trainFileName = "../../Datasets/" + enderecoEntradas + "/ratings_train.txt";
 	string testFileName = "../../Datasets/" + enderecoEntradas + "/ratings_test.txt";

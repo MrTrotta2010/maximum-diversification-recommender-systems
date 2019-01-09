@@ -1,4 +1,4 @@
-r='rec_itemKNN'
+r='rec_softMarginRankingMF'
 
 sed 's/\t/ /g' $r'.txt' > rec_itemKNN_tmp.txt
 mv rec_itemKNN_tmp.txt $r'_conv.txt'

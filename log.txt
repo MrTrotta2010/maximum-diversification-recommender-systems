@@ -1,53 +1,66 @@
-14:49:50   12/11/18
+16:27:09   09/01/19
 
 ----------------------------------
 Dataset  ML-1M
 ----------------------------------
 UserKNN
-loading_time 0.9
-memory 16
-training data: 6040 users, 3649 items, 699865 events, sparsity 96.82456
-test data:     6040 users, 3578 items, 300344 events, sparsity 98.61023
-UserKNN k=80 correlation=Cosine q=1 weighted=False alpha=0,5 (only for BidirectionalConditionalProbability) 
-training_time 00:03:57.9118540 Wrote predictions to file Recommendations-Lists/rec_userKNN.txt. prediction_time 00:06:51.2647350
-
-memory 246
 
 ----------------------------------------------------------------------------------
 
 ItemKNN
-loading_time 0.91
-memory 16
-training data: 6040 users, 3649 items, 699865 events, sparsity 96.82456
-test data:     6040 users, 3578 items, 300344 events, sparsity 98.61023
-ItemKNN k=80 correlation=Cosine q=1 weighted=False alpha=0,5 (only for BidirectionalConditionalProbability) 
-training_time 00:01:15.8340450 Wrote predictions to file Recommendations-Lists/rec_itemKNN.txt. prediction_time 00:10:05.6304270
-
-memory 126
 
 ----------------------------------------------------------------------------------
 
 WRMF
-loading_time 1.01
-memory 16
-training data: 6040 users, 3649 items, 699865 events, sparsity 96.82456
-test data:     6040 users, 3578 items, 300344 events, sparsity 98.61023
-WRMF num_factors=10 regularization=0.015 alpha=1 num_iter=15 
-training_time 00:00:09.6752370 Wrote predictions to file Recommendations-Lists/rec_WRMF.txt. prediction_time 00:00:02.9737720
-
-memory 52
 
 ----------------------------------------------------------------------------------
 
 MostPopular
-loading_time 1
+
+----------------------------------------------------------------------------------
+
+SoftMarginRankingMF
+loading_time 0.96
 memory 16
 training data: 6040 users, 3649 items, 699865 events, sparsity 96.82456
 test data:     6040 users, 3578 items, 300344 events, sparsity 98.61023
-MostPopular by_user=False 
-training_time 00:00:00.0103030 Wrote predictions to file Recommendations-Lists/rec_MostPopular.txt. prediction_time 00:00:02.1428470
+SoftMarginRankingMF num_factors=10 bias_reg=0 reg_u=0.0025 reg_i=0.0025 reg_j=0.00025 num_iter=30 learn_rate=0.1 uniform_user_sampling=True with_replacement=False update_j=True 
+loss_num_sample_triples=7700
+training_time 00:00:23.9052370 Wrote predictions to file Recommendations-Lists/ML-1M/rec_softMarginRankingMF.txt. prediction_time 00:00:02.9145290
 
 memory 35
+
+----------------------------------------------------------------------------------
+
+----------------------------------
+Dataset  CIAO
+----------------------------------
+UserKNN
+
+----------------------------------------------------------------------------------
+
+ItemKNN
+
+----------------------------------------------------------------------------------
+
+WRMF
+
+----------------------------------------------------------------------------------
+
+MostPopular
+
+----------------------------------------------------------------------------------
+
+SoftMarginRankingMF
+loading_time 0.06
+memory 6
+training data: 7630 users, 11615 items, 40571 events, sparsity 99.95422
+test data:     7630 users, 6694 items, 21863 events, sparsity 99.95719
+SoftMarginRankingMF num_factors=10 bias_reg=0 reg_u=0.0025 reg_i=0.0025 reg_j=0.00025 num_iter=30 learn_rate=0.1 uniform_user_sampling=True with_replacement=False update_j=True 
+loss_num_sample_triples=8700
+training_time 00:00:00.7808220 Wrote predictions to file Recommendations-Lists/CIAO/rec_softMarginRankingMF.txt. prediction_time 00:00:07.7165870
+
+memory 9
 
 ----------------------------------------------------------------------------------
 

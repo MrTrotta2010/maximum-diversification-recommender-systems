@@ -1,0 +1,191 @@
+# -*- coding: utf-8 -*-
+
+## Algoritmo de MaxCoverage com as restrições de selecionar itens bem avaliados e menos similares
+
+import os
+import sys
+import ConfigParser
+import numpy as np
+import operator
+from math import log
+
+from collections import OrderedDict
+from io import *
+
+##########################################################################################################################################
+
+def recommendRestrictionsMaxCoverage(usersRatings, itemsRatings, usersTargets, globalSettings, alpha, outputFileName):
+
+	# initialize variables
+	users = len(usersRatings.keys())
+	items = len(itemsRatings.keys())
+	usersDataset = {}
+	itemsDataset = {}
+	itemsMaxCov = {}
+	meanItemsRatings = {}
+	similarityItemsRatings = {}
+	# parameters from config.ini
+	k = int(globalSettings['recommendation_size'])+10
+#	k = 10 #testing
+#	alpha = float(globalSettings['recommendation_alpha'])
+#	beta = float(globalSettings['recommendation_beta'])
+	beta = (1-alpha)
+	# another variables
+	usersCovering = 0
+	bestCovering = 0
+	itemId = 0
+	restriction1 = 0
+	restriction2 = 0
+	recommendations = []
+	meanItem = 0.0
+	ratings = []
+	
+	# initialize with zero users
+	usersCoverage = set([])
+	usersCoverageSelectItem = set([])
+	# initialize with all users
+	usersDataset = usersRatings.keys()
+	itemsDataset = itemsRatings.keys()
+	
+	# important analyses
+	usersRelevant, meanItemsRatings, maxFrequency = relevantFrequency(itemsRatings)
+
+	itr = 0
+	while (itr < k):
+#		print "********************************************* k = ", itr, " *************************************************************"
+		# ranking of coverage
+		for i in itemsDataset:
+			# variables with rule score:
+			usersCoverageByItem = set(itemsRatings[i].keys())
+			usersPositiveFeedback = usersRelevant[i]
+#			tempCoverage = (set(usersPositiveFeedback)) - (set(usersCoverage))
+			tempCoverage = (set(usersCoverageByItem)) - (set(usersCoverage))
+			# Relevance:
+			restriction1 = float(len(usersPositiveFeedback)) / len(usersCoverageByItem) # best evaluated
+			# similarity for two items
+			if (len(usersCoverage) > 0):
+				# evaluated similarity to always items in coverage
+				intersection = []
+				usersPos = []
+				value = 0
+				for j in itemsMaxCov.values():
+					usersPos = usersRelevant[j]
+#					value = len(set(usersPositiveFeedback).intersection(set(usersPos)))
+					value = len(set(usersCoverageByItem).intersection(set(itemsRatings[j].keys())))
+					intersection.append(value)
+				# identify the maximum value
+				similarity = float(np.max(intersection))
+			else:
+				similarity = 0.0
+			#Diversification:
+#			restriction2 = similarity / float(len(usersPositiveFeedback))
+			restriction2 = similarity / float(len(usersCoverageByItem))
+			#restriction2 = float(len(set(usersPositiveFeedback).intersection(set(usersCoverage)))) / len(usersPositiveFeedback)
+			# rule score:
+#			usersCovering = float(len(tempCoverage)) * (restriction1 + (1.0 - restriction2))
+#			usersCovering = float(len(tempCoverage)) * (1.0 + (alpha * restriction1 - beta * restriction2))
+			if (float(len(tempCoverage)) > 0):
+#				usersCovering = log(float(len(tempCoverage))) * (restriction1 + (1.0 - restriction2))
+				usersCovering = log(float(len(tempCoverage))) * (1.0 + (alpha * restriction1 - beta * restriction2))
+				#usersCovering = float(len(tempCoverage)) * (restriction1 + (1-restriction2))
+#				print str(i) + " : " + str(log(float(len(tempCoverage)))) + " * (" + str(restriction1) + " + (1 - " + str(restriction2) + ")) = " + str(usersCovering) + " ===> Cobertura: " + str(len(tempCoverage))
+#				print str(i) + " : " + str(log(float(len(tempCoverage)))) + " * ( 1.0 + ( " + str(alpha) + " * " + str(restriction1) + " - " + str(beta) + " * " + str(restriction2) + ")) = " + str(usersCovering) + " ==> Coverage: " + str(len(tempCoverage))
+			else:
+				usersCovering = 0.0	
+#				print str(i) + " : " + str(0.0) + " * ( 1.0 + ( " + str(alpha) + " * " + str(restriction1) + " - " + str(beta) + " * " + str(restriction2) + ")) = " + str(usersCovering) + " ==> Coverage: " + str(len(tempCoverage))
+#				print str(i) + " : " + str(0.0) + " * (" + str(restriction1) + " + (1 - " + str(restriction2) + ")) = " + str(usersCovering) + " ===> Cobertura: " + str(len(tempCoverage))
+#			print str(i) + " : " + str(float(len(tempCoverage))) + " * ( 1.0 + ( " + str(alpha) + " * " + str(restriction1) + " - " + str(beta) + " * " + str(restriction2) + ")) = " + str(usersCovering) + " ==> Coverage: " + str(len(tempCoverage))
+			# case is better
+			if (usersCovering > bestCovering) or ((usersCovering == bestCovering) and (i < itemId)):
+				bestCovering = usersCovering
+				if (float(len(tempCoverage)) > 0):
+					score = str(log(float(len(tempCoverage)))) + " * (" + str(restriction1) + " + (1 - " + str(restriction2) + ")) = " + str(bestCovering) + "===> Cobertura: " + str(len(tempCoverage))
+				else:
+					score = str(0.0) + " * (" + str(restriction1) + " + (1 - " + str(restriction2) + ")) = " + str(bestCovering) + "===> Cobertura: " + str(len(tempCoverage))
+#				score = str(float(len(tempCoverage))) + " * ( " + str(restriction1) + " + (1-" + str(restriction2) + ")) ==> Coverage: " + str(len(tempCoverage))
+#				score = str(float(len(tempCoverage))) + " * ( 1.0 + ( " + str(alpha) + " * " + str(restriction1) + " - " + str(beta) + " * " + str(restriction2) + ")) => Coverage: " + str(len(tempCoverage))
+				itemId = i
+				# users coverage
+#				usersCoverageSelectItem = set(usersPositiveFeedback)
+				usersCoverageSelectItem = set(usersCoverageByItem)
+
+		#remove users coverage
+		bestCovering = 0
+		usersCoverage = set(usersCoverage).union(set(usersCoverageSelectItem))
+		usersDataset = set(usersDataset) - set(usersCoverage)
+		#remove items recommended
+		try:
+			itemsDataset.remove(itemId)
+			# save recommendation
+			itr += 1
+			itemsMaxCov[itr] = itemId
+#			print "****************************************************************************************"
+			print "SELECTED ", itr, " : ", itemId, ":", score
+#			print "****************************************************************************************"
+		except ValueError:
+			print "Exception detected! Error in revome itemId:", itemId
+			usersDataset = usersRatings.keys()
+			usersCoverage = set([])
+
+		#case all users is covering
+		if not bool(usersDataset):
+			if itr < k:
+				usersDataset = usersRatings.keys()
+				usersCoverage = set([])
+			else:
+				break
+	
+	recommendations = itemsMaxCov.values()
+	
+	## DUMP-RECOMMENDATIONS
+	with open(outputFileName, 'w') as outputFile:
+		spamwriter = csv.writer(outputFile, delimiter='\t', quoting = csv.QUOTE_NONE)
+		# retrieve the top K maxCoverage items not consumed by user
+		cont = 0
+		issuedItems = ""
+		# for each item
+		for i in recommendations:
+			# select just k items
+			if (cont < k):
+				issuedItems += str(i) + ":" + str(0.0) + " "
+				cont += 1
+			else:
+				break
+		# for each user
+		for u in usersTargets:
+			recommendationItems = str(u) + " " + issuedItems
+			spamwriter.writerow([recommendationItems])
+
+	outputFile.close()
+	
+##########################################################################################################################################
+
+def relevantFrequency(itemsRatings):
+
+	cont = 0
+	meanItemsRatings = {}
+	relevantRated = {}
+	amountRated = {}
+	users = []
+	
+	for itemId in itemsRatings.keys():
+		# variables
+		cont = 0
+		users = []
+		# calculate the mean of ratings
+		ratings = np.array(itemsRatings[itemId].values())
+		meanItemsRatings[itemId] = float(np.mean(ratings))
+		# find the relevant users
+		for userId in itemsRatings[itemId]:
+			# select relevant users		
+			if (itemsRatings[itemId][userId] >= meanItemsRatings[itemId]):
+				users.append(userId)
+				cont += 1
+		# save informations
+		relevantRated[itemId] = users
+		amountRated[itemId] = cont
+		
+	maxItem = max(amountRated.iteritems(), key=operator.itemgetter(1))[0]
+	maxValue = amountRated[maxItem]
+
+	return (relevantRated, meanItemsRatings, maxValue)			

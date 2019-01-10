@@ -18,5 +18,5 @@ set output outputFile
 #nome de saida
 set ylabel "Rel-Genre Coverage" offset 1
 set xlabel "Usuários (%)" 
-plot inputMDRS using ((column(0) / 6040) * 100):5 title titleMDRS with line lw 10 lc "#000000",\
-    inputStandard using ((column(0) / 6040) * 100):5 title titleStandard with line lw 10 lc "red",\
+plot inputMDRS using ((column(0) / 7630) * 100):5 title titleMDRS with line lw 10 lc "#000000",\
+    inputStandard using ((column(0) / 7630) * 100):5 title titleStandard with line lw 10 lc "red",\

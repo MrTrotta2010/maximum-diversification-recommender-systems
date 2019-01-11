@@ -10,11 +10,11 @@ echo "Alpha: " $1
 
 echo "Rodando o MDRS" $2 $3
 cd frameworks/MDRS/
-./mdrs $1 $2 $3 #Roda o MDRF
+#./mdrs $1 $2 $3 #Roda o MDRF
 
 echo "Avaliando as recomendações de base" $2 $3
 cd ../EvalRec/
-./eval $2 $3 #Avalia as recomendações base
+#./eval $2 $3 #Avalia as recomendações base
 
 echo "Ordenando as avaliações do MDRS"
 cd ../../Evaluations/MDRS_Output/

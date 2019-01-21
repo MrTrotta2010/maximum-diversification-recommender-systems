@@ -1,4 +1,5 @@
-rec=("userKNN" "itemKNN" "WRMF" "itemAttributeKNN" "softMarginRankingMF" "bestRated" "mostPopular")
+#rec=("userKNN" "itemKNN" "WRMF" "itemAttributeKNN" "softMarginRankingMF" "bestRated" "mostPopular")
+rec=("mostPopular")
 
 #$1 é o dataset
 

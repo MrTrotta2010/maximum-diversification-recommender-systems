@@ -1,0 +1,225 @@
+# -*- coding: utf-8 -*-
+
+import commands
+import operator
+import os
+import sys
+import ConfigParser
+
+pathname = os.path.dirname(sys.argv[0])
+fullPath = os.path.abspath(pathname)
+
+from io import *
+from math import *
+from scipy.sparse import csr_matrix
+
+##########################################################################################################################################
+def jaccard_similarity(x,y):
+	# users set of item x
+	setItemX = numpy.nonzero(x)
+	setItemX = numpy.array(setItemX)[0]
+	# users set of item y	
+	setItemY = numpy.nonzero(y)
+	setItemY = numpy.array(setItemY)[0]
+
+	intersection_cardinality = len(set.intersection(*[set(setItemX), set(setItemY)]))
+	union_cardinality = len(set.union(*[set(setItemX), set(setItemY)]))
+
+	if (union_cardinality == 0):
+		return 1
+	else:
+		return intersection_cardinality/float(union_cardinality)
+
+##########################################################################################################################################
+
+def recommendPerPopularity(trainSet, testSet, globalSettings, outputFileName):
+
+	# initialize variables
+	[users, items] = trainSet.shape
+	popularity = numpy.zeros(shape=(1,items))[0]
+	topKRecommendations = numpy.zeros(shape=(users,int(globalSettings['recommendation_size'])))
+	predRatings = numpy.zeros(shape=(users,items))	
+
+	# calculate items popularity 
+	itr = 0
+	for itr in range(items):
+		# number of users who consumed the item itr
+		consumed = len((numpy.nonzero(trainSet[:,itr])[0]))
+		popularity[itr] = consumed
+
+	# sort the popularity
+	ids = popularity.argsort()
+	ids_popularity = ids[::-1]
+	popularity[::-1].sort()
+	
+	# retrieve the top K popularity items not consumed by user
+	itr = 0
+	for itr in range(users):
+		# if not consumed by user itr
+		idsRecommendation = ids_popularity[numpy.where(trainSet[itr,:] == 0)[0]]
+		topKRecommendations[itr,:] = idsRecommendation[0:int(globalSettings['recommendation_size'])]
+	
+	#normalize ids users and items
+	topKRecommendations = topKRecommendations + numpy.ones(topKRecommendations.shape)
+	
+	# dump predictions into the output file
+	dumpRecommendations(predRatings, topKRecommendations, outputFileName)
+
+##########################################################################################################################################
+
+def recommendMaximumCoverage(trainSet, testSet, globalSettings, outputFileName):
+
+	# initialize variables
+	[users, items] = trainSet.shape
+	itemsList = numpy.ones(shape=(1,items))[0]		
+	maxCoverage = numpy.zeros(shape=(1,items))[0]
+	ids_coverage = numpy.zeros(shape=(1,items))[0]
+	topKRecommendations = numpy.zeros(shape=(users,int(globalSettings['recommendation_size'])))
+	predRatings = numpy.zeros(shape=(users,items))
+	topk = 5*int(globalSettings['recommendation_size'])
+
+	#calculate maximum coverage
+	itemsCoverage = 0
+	while(itemsCoverage < topk):
+		#list users coverage
+		usersList = numpy.ones(shape=(1,users))[0]		
+		while(True):
+			#calculate solution partial
+			i = 0
+			for i in range(items):
+				cont = 0
+				if (itemsList[i] != 0):
+					#sum posibilitys
+					u = 0
+					for u in range(users):
+						if ((usersList[u] != 0) and (trainSet[u,i] != 0)):
+							cont += 1
+				maxCoverage[i] = cont
+			#itemId to recommended
+			itemId = numpy.argmax(maxCoverage)
+			ids_coverage[itemsCoverage] = itemId
+			itemsCoverage += 1		
+			#eliminate future compare position
+			itemsList[itemId] = 0
+			u = 0
+			for u in range(users):
+				if (trainSet[u,itemId] != 0):
+					usersList[u] = 0
+
+			#check if all users in coverage				
+			if ((numpy.sum(usersList) == 0) or (itemsCoverage == (topk))):
+				#print numpy.sum(usersList)
+				#print itemsCoverage
+				break
+	
+	# retrieve the top K coverage items not consumed by user
+	itr = 0
+	for itr in range(users):
+		# if not consumed by user itr
+		idsRecommendation = ids_coverage[numpy.where(trainSet[itr,:] == 0)[0]]
+		topKRecommendations[itr,:] = idsRecommendation[0:int(globalSettings['recommendation_size'])]
+	
+	#normalize ids users and items
+	topKRecommendations = topKRecommendations + numpy.ones(topKRecommendations.shape)
+	
+	# dump predictions into the output file
+	dumpRecommendations(predRatings, topKRecommendations, outputFileName)	
+	
+##########################################################################################################################################
+
+def recommendHybridCoverage(trainSet, testSet, globalSettings, outputFileName):
+
+	# initialize variables
+	[users, items] = trainSet.shape
+	itemsList = numpy.ones(shape=(1,items))[0]		#items enable in trainSet
+	similarityItems = numpy.zeros(shape=(1,items))[0] #less items similarity
+	scoreRestrictions = numpy.zeros(shape=(1,items))[0] #scores for each item
+	maxCoverage = numpy.zeros(shape=(1,items))[0]	
+	ids_coverage = numpy.zeros(shape=(1,items))[0]	#items in coverage list
+	topKRecommendations = numpy.zeros(shape=(users,int(globalSettings['recommendation_size'])))
+	predRatings = numpy.zeros(shape=(users,items)) #ratings in topKRecommendations
+	topk = 5*int(globalSettings['recommendation_size']) #number of items selected
+
+	### first restriction: top-rated items
+	meanRatingsItems = trainSet.mean(0)
+	#matrix to array
+	meanRatingsItems = numpy.squeeze(numpy.asarray(meanRatingsItems))
+	#sort the mean
+	#ids = meanRatingsItems.argsort()
+	#idsMeanRatingsItems = ids[::-1]
+	#meanRatingsItems[::-1].sort()
+	#normalized meanItensRatings
+	itemId = numpy.argmax(meanRatingsItems)
+	maxMean = meanRatingsItems[itemId]		
+	meanRatingsItems = meanRatingsItems / maxMean	
+
+	### second restriction: less similar items
+	i = 0
+	for i in range(items):
+		similarity = 0
+		#ratings of users to item i
+		setA = trainSet[:,i].transpose()
+		j = 0
+		for j in range(items):
+			#ratings of users to item j
+			setB = trainSet[:,j].transpose()
+			#similarity of jaccard
+			similarity += jaccard_similarity(setA,setB)
+		#calculate similarity mean
+		similarityItems[i] = similarity / items
+
+	#calculate maximum coverage
+	itemsCoverage = 0
+	while(itemsCoverage < topk):
+		#list users coverage
+		usersList = numpy.zeros(shape=(1,users))[0]
+		while(True):
+			#scores for each item
+			scoreRestrictions = numpy.zeros(shape=(1,items))[0] 
+		
+			### standard selection
+			## rule score: (alpha*meanRatings) + (beta*(1-similarity))
+			alpha = float(globalSettings['recommendation_alpha'])
+			beta = float(globalSettings['recommendation_beta'])
+			i = 0
+			for i in range(items):
+				if (itemsList[i] != 0):
+					scoreRestrictions[i] = (alpha*meanRatingsItems[i]) + (beta*(1-similarityItems[i]))
+			
+			# find item with the best score
+			itemId = numpy.argmax(scoreRestrictions)
+			itemsList[itemId] = 0
+			ids_coverage[itemsCoverage] = itemId
+			itemsCoverage += 1
+
+			#brand users coverages
+			u = 0
+			for u in range(users):
+				if (trainSet[u,itemId] != 0):
+					usersList[u] = 1
+					
+			#update similaritys - calculate jaccard similarity for items in coverage
+			i = 0
+			for i in range(items):
+				setA = trainSet[:,i].transpose()
+				similarityItems[i] = jaccard_similarity(setA,usersList)
+		
+			#check if all users in coverage				
+			if ((numpy.sum(usersList) == len(usersList)) or (itemsCoverage == (topk))):
+				#print numpy.sum(usersList)
+				#print itemsCoverage
+				break
+	
+	# retrieve the top K coverage items not consumed by user
+	itr = 0
+	for itr in range(users):
+		# if not consumed by user itr
+		idsRecommendation = ids_coverage[numpy.where(trainSet[itr,:] == 0)[0]]
+		topKRecommendations[itr,:] = idsRecommendation[0:int(globalSettings['recommendation_size'])]
+	
+	#normalize ids users and items
+	topKRecommendations = topKRecommendations + numpy.ones(topKRecommendations.shape)
+
+	# dump predictions into the output file
+	dumpRecommendations(predRatings, topKRecommendations, outputFileName)	
+	

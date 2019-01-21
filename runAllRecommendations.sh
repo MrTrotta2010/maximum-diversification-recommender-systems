@@ -50,7 +50,25 @@ do
 
 	echo "SoftMarginRankingMF" >> log.txt
 	echo "SoftMarginRankingMF"
-	item_recommendation --training-file=Datasets/$f/trainSet.csv	 --test-file=Datasets/$f/testSet.csv --recommender=SoftMarginRankingMF --prediction-file=Recommendations-Lists/$f/rec_softMarginRankingMF.txt --predict-items-number=100 2>>log.txt >> log.txt
+	#item_recommendation --training-file=Datasets/$f/trainSet.csv	 --test-file=Datasets/$f/testSet.csv --recommender=SoftMarginRankingMF --prediction-file=Recommendations-Lists/$f/rec_softMarginRankingMF.txt --predict-items-number=100 2>>log.txt >> log.txt
+
+
+	echo "" >> log.txt
+	echo "----------------------------------------------------------------------------------" >> log.txt
+	echo "" >> log.txt
+
+	echo "ItemAttributeKNN" >> log.txt
+	echo "ItemAttributeKNN"
+	item_recommendation --training-file=Datasets/$f/trainSet.csv	 --test-file=Datasets/$f/testSet.csv --item-attributes=Datasets/$f/attrItems.txt --recommender=ItemAttributeKNN --prediction-file=Recommendations-Lists/$f/rec_ItemAttributeKNN.txt --predict-items-number=100 2>>log.txt >> log.txt
+
+
+	echo "" >> log.txt
+	echo "----------------------------------------------------------------------------------" >> log.txt
+	echo "" >> log.txt
+
+	echo "SoftMarginRankingMF" >> log.txt
+	echo "SoftMarginRankingMF"
+	#item_recommendation --training-file=Datasets/$f/trainSet.csv	 --test-file=Datasets/$f/testSet.csv --item-attributes=Datasets/$f/attrItems.txt --recommender=SoftMarginRankingMF --prediction-file=Recommendations-Lists/$f/rec_softMarginRankingMF.txt --predict-items-number=100 2>>log.txt >> log.txt
 
 
 	echo "" >> log.txt

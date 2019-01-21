@@ -1,0 +1,29 @@
+***********************************************************************************
+			DESCRIÇÃO DOS SCRIPTS
+***********************************************************************************
+
+** io.py
+
+	- Carrega os conjuntos de dados de treino e teste sobre o seguinte formato:
+		userId::itemId::rating::timestamp
+	- Gera os seguintes dicionários:
+		- usersRatings: um conjunto de dictOfDict contendo ratings endereçados primeiro pelo usuário
+		- itemsRatings: um conjunto de dictOfDict contendo ratings endereçados primeiro pelo item
+		- usersTimestamp: um conjunto de dictOfDict contendo timestamp endereçados primeiro pelo usuário
+		- itemsTimestamp: um conjunto de dictOfDict contendo timestamp endereçados primeiro pelo item
+	
+** popularity.py
+
+	- Algoritmo de recomendação baseado na popularidade dos itens.
+	- A popularidade dos itens é estimada pelo número de usuários distintos que o consumiu.
+
+** topRated.py
+
+** recentItems.py
+
+** maxCoverage.py
+
+** runNonPersonalized.py
+
+** runAllAnalyses.sh
+

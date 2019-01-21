@@ -1,4 +1,4 @@
-16:27:09   09/01/19
+15:18:33   11/01/19
 
 ----------------------------------
 Dataset  ML-1M
@@ -20,15 +20,23 @@ MostPopular
 ----------------------------------------------------------------------------------
 
 SoftMarginRankingMF
-loading_time 0.96
-memory 16
+
+----------------------------------------------------------------------------------
+
+ItemAttributeKNN
+loading_time 1.06
+memory 17
 training data: 6040 users, 3649 items, 699865 events, sparsity 96.82456
 test data:     6040 users, 3578 items, 300344 events, sparsity 98.61023
-SoftMarginRankingMF num_factors=10 bias_reg=0 reg_u=0.0025 reg_i=0.0025 reg_j=0.00025 num_iter=30 learn_rate=0.1 uniform_user_sampling=True with_replacement=False update_j=True 
-loss_num_sample_triples=7700
-training_time 00:00:23.9052370 Wrote predictions to file Recommendations-Lists/ML-1M/rec_softMarginRankingMF.txt. prediction_time 00:00:02.9145290
+18 item attributes for 3883 items, 6408 assignments, 3883 items with attribute assignments
+ItemAttributeKNN k=80 correlation=Cosine q=1 weighted=False alpha=0,5 (only for BidirectionalConditionalProbability) 
+training_time 00:00:45.7657590 Wrote predictions to file Recommendations-Lists/ML-1M/rec_ItemAttributeKNN.txt. prediction_time 00:w10:50.4323790
 
-memory 35
+memory 139
+
+----------------------------------------------------------------------------------
+
+SoftMarginRankingMF
 
 ----------------------------------------------------------------------------------
 
@@ -52,15 +60,23 @@ MostPopular
 ----------------------------------------------------------------------------------
 
 SoftMarginRankingMF
-loading_time 0.06
-memory 6
+
+----------------------------------------------------------------------------------
+
+ItemAttributeKNN
+loading_time 0.1
+memory 9
 training data: 7630 users, 11615 items, 40571 events, sparsity 99.95422
 test data:     7630 users, 6694 items, 21863 events, sparsity 99.95719
-SoftMarginRankingMF num_factors=10 bias_reg=0 reg_u=0.0025 reg_i=0.0025 reg_j=0.00025 num_iter=30 learn_rate=0.1 uniform_user_sampling=True with_replacement=False update_j=True 
-loss_num_sample_triples=8700
-training_time 00:00:00.7808220 Wrote predictions to file Recommendations-Lists/CIAO/rec_softMarginRankingMF.txt. prediction_time 00:00:07.7165870
+17 item attributes for 16121 items, 16121 assignments, 16121 items with attribute assignments
+ItemAttributeKNN k=80 correlation=Cosine q=1 weighted=False alpha=0,5 (only for BidirectionalConditionalProbability) 
+training_time 00:19:52.8829620 Wrote predictions to file Recommendations-Lists/CIAO/rec_ItemAttributeKNN.txt. prediction_time 00:29:10.2582840
 
-memory 9
+memory 1357
+
+----------------------------------------------------------------------------------
+
+SoftMarginRankingMF
 
 ----------------------------------------------------------------------------------
 

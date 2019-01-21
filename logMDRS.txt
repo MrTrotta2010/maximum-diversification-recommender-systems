@@ -1,0 +1,442 @@
+----------------------------------
+Dataset  ML-1M
+----------------------------------
+userKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+itemKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+WRMF
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+itemAttributeKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+softMarginRankingMF
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+bestRated
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+mostPopular
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+----------------------------------
+----------------------------------
+Dataset  CIAO
+----------------------------------
+userKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+itemKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+WRMF
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+itemAttributeKNN
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+softMarginRankingMF
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+bestRated
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+mostPopular
+  Alpha:  0.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.250000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.500000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  0.750000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+  Alpha:  1.000000
+  Rodou MDRS
+  Rodou EvalRec
+  Ordenou as avaliações do MDRS
+  Ordenou as avaliações do EvalRec
+  Plotou os gráficos
+----------------------------------

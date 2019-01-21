@@ -1,0 +1,147 @@
+# -*- coding: utf-8 -*-
+
+## Algoritmo de MaxCoverage com as restrições de selecionar itens bem avaliados e menos similares
+
+import os
+import sys
+import ConfigParser
+import numpy as np
+import operator
+
+from collections import OrderedDict
+from io import *
+
+##########################################################################################################################################
+
+def retrievalRecommendRestrictionsMaxCoverage(usersRatings, itemsRatings, usersTargets, globalSettings, outputFileName):
+
+	# initialize variables
+	users = len(usersRatings.keys())
+	items = len(itemsRatings.keys())	
+	usersDataset = {}
+	itemsDataset = {}
+	itemsMaxCov = {}
+	meanItemsRatings = {}
+	# parameters from config.ini
+	k = int(globalSettings['recommendation_size'])+10
+	alpha = float(globalSettings['recommendation_alpha'])
+	beta = float(globalSettings['recommendation_beta'])
+	# another variables
+	usersCovering = 0
+	bestCovering = 0
+	itemId = 0
+	restriction1 = 0
+	restriction2 = 0
+	recommendations = []
+	meanItem = 0.0
+	ratings = []
+	
+	# initialize with zero users
+	usersCoverage = set([])
+	usersCoverageSelectItem = set([])
+	# initialize with all users
+	usersDataset = usersRatings.keys()
+	itemsDataset = itemsRatings.keys()
+	
+	# retrieval coverage
+	sizeCoverage = 0
+	itr = 0
+	for itemId in itemsAnalyzed:
+		lastCoverage = len(usersCoverage)
+		usersCoverage = set(usersCoverage).union(set(itemsRatings[itemId].keys()))
+		newCoverage = len(usersCoverage)
+		try:
+			itemsDataset.remove(itemId)
+			# save recommendation
+			itr += 1
+			itemsMaxCov[itr] = itemId
+			print itr, ": ", itemId
+		except ValueError:
+			print "Error: removed retrieval itemId"
+		# initialize a new coverage	
+		if (newCoverage == lastCoverage):
+			usersCoverage = set([])
+			usersCoverage = set(usersCoverage).union(set(itemsRatings[itemId].keys()))	
+
+	while (itr <= k):
+		# ranking of coverage
+		for i in itemsDataset:
+			# mean rating item
+			if (meanItemsRatings.get(i,False)):
+				meanItem = float(meanItemsRatings[i])
+			else:
+				ratings = np.array(itemsRatings[i].values())
+				meanItemsRatings[i] = np.mean(ratings)
+				meanItem = float(meanItemsRatings[i])
+			# variables with rule score:
+			usersCoverageByItem = set(itemsRatings[i].keys())
+			tempCoverage = (set(usersCoverageByItem)) - (set(usersCoverage))
+			restriction1 = float(relevantUsers(itemsRatings, i, meanItem)) / len(usersCoverageByItem) # best evaluated
+			restriction2 = float(len(set(usersCoverageByItem).intersection(set(usersCoverage)))) / len(usersCoverageByItem) # less similar
+			# rule score:
+			usersCovering = float(len(tempCoverage)) * (1 + (alpha * restriction1 - beta * restriction2))
+			# case is better
+			if (usersCovering > bestCovering) or ((usersCovering == bestCovering) and (i < itemId)):
+				bestCovering = usersCovering
+				itemId = i
+				# users coverage
+				usersCoverageSelectItem = set(usersCoverageByItem)
+
+		#remove users coverage
+		bestCovering = 0
+		usersCoverage = set(usersCoverage).union(set(usersCoverageSelectItem))
+		usersDataset = set(usersDataset) - set(usersCoverage)
+		#remove items recommended
+		try:
+			itemsDataset.remove(itemId)
+			# save recommendation
+			itr += 1
+			itemsMaxCov[itr] = itemId
+			print itr, ": ", itemId
+		except ValueError:
+			usersDataset = usersRatings.keys()
+			usersCoverage = set([])
+
+		#case all users is covering
+		if not bool(usersDataset):
+			if itr <= k:
+				usersDataset = usersRatings.keys()
+				usersCoverage = set([])
+			else:
+				break
+				
+	recommendations = itemsMaxCov.values()
+	
+	## DUMP-RECOMMENDATIONS
+	with open(outputFileName, 'w') as outputFile:
+		spamwriter = csv.writer(outputFile, delimiter='\t', quoting = csv.QUOTE_NONE)
+		# retrieve the top K maxCoverage items not consumed by user
+		cont = 1
+		issuedItems = ""
+		# for each item
+		for i in recommendations:
+			# select just k items
+			if (cont <= int(globalSettings['recommendation_size'])):
+				issuedItems += str(i) + ":" + str(0.0) + " "
+				cont += 1
+			else:
+				break
+		# for each user
+		for u in usersTargets:
+			recommendationItems = str(u) + " " + issuedItems
+			spamwriter.writerow([recommendationItems])
+
+	outputFile.close()
+	
+##########################################################################################################################################
+
+def relevantUsers(itemsRatings, itemId, meanRatingItem):
+
+	cont = 0
+	
+	for userId in itemsRatings[itemId]:
+		# select relevant users
+		if (itemsRatings[itemId][userId] >= meanRatingItem):
+			cont += 1
+
+	return (cont)

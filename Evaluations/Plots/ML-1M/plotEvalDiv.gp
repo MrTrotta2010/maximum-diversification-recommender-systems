@@ -16,7 +16,7 @@ set key at graph 1, 0.98
 
 set output outputFile
 #nome de saida
-set ylabel "Genre Covegare" offset 1
+set ylabel "Cobertura de Gêneros" offset 1
 set xlabel "Usuários (%)" 
 plot inputMDRS using ((column(0) / 6040) * 100):4 title titleMDRS with line lw 10 lc "#000000",\
     inputStandard using ((column(0) / 6040) * 100):4 title titleStandard with line lw 10 lc "red",\

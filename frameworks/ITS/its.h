@@ -31,6 +31,9 @@ typedef std::unordered_map<int, vector<int>> VectorOfUser; // INT: ID do usuári
 typedef struct Solucao {
 	int * itens;
 	int * posicoes;
+	float fo;
+	float rel;
+	float div;
 }Solucao;
 
 struct Element{
@@ -102,9 +105,9 @@ GBest path_Relink(GBest gbest, int gbestPos, GBest dbest, Swarm &swarm, VectorOf
 
 void calculate_fo(Particle& p, int userId, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int swarmSize, GBest &dBest);
 
-float calculate_fo2(Solucao solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize);
+float calculate_fo(Solucao &solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize);
 
-float fitness(Solucao solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize);
+float fitness(Solucao &solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize);
 
 float calculate_fo_path(GBest &p, VectorOfUser &hashFeature, int numPreds, float alfa, float &relevance, float &diversify);
 

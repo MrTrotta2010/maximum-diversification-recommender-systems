@@ -80,8 +80,8 @@ int main(int argc, char **argv)
 
 		for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++) {
 			int userId = itrUser->first;
-			//cout << userId << "\n";
 			gbestUser[userId] = tabuSearch(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, numPreds, alfa, iter_max, particleSize);
+			//cout << "Depois: " << gbestUser[userId].fo << gbestUser[userId].rel << gbestUser[userId].div << "\n";
 			PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId], hashFeature);
 			vecPrint.push_back(printData);
 		}
@@ -536,12 +536,12 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	melhorSolucao.rel = solucaoAtual.rel;
 	melhorSolucao.div = solucaoAtual.div;
 	
-	printf("Solução inicial: ");
+	/*printf("Solução inicial: ");
 	for (int i = 0; i < particleSize; i ++) {
 		printf("%d ", solucaoAtual.itens[i]);
 	}
 	puts("");
-
+*/
 	int ** listaTabu = (int**)malloc(tamTabu * sizeof(int*)); //Crio a lista tabu vazia
 	for (int i = 0; i < tamTabu; i++) {
 		listaTabu[i] = (int*)malloc(particleSize * sizeof(int));
@@ -593,9 +593,12 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 			
 			if (solucaoAtual.fo > melhorSolucao.fo) {
 				//Atualiza a melhor
+				gbest.element.clear();
 				for (int i = 0; i < particleSize; i++) {
 					melhorSolucao.itens[i] = solucaoAtual.itens[i];
 					melhorSolucao.posicoes[i] = solucaoAtual.posicoes[i];
+					Element e(solucaoAtual.itens[i], i);
+					gbest.element.emplace_back(e);
 				}
 				melhorSolucao.fo = solucaoAtual.fo;
 				melhorSolucao.rel = solucaoAtual.rel;
@@ -605,14 +608,15 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 				gbest.fo = melhorSolucao.fo;
 				gbest.rel = melhorSolucao.rel;
 				gbest.div = melhorSolucao.div;
+
 				//gbest.element = swarm[i].pBest;
 				//gbestPos = i;
 
-				printf("Melhor solução: %f\n", melhorSolucao.fo);
+			/*	printf("Melhor solução: %f\n", melhorSolucao.fo);
 				for (int i = 0; i < particleSize; i ++) {
 					printf("%d ", melhorSolucao.itens[i]);
 				}
-				printf("\n\n");
+				printf("\n\n");*/
 			}
 		}
 
@@ -637,6 +641,8 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	// 	cout << "\n";
 	// 	cout << i << " : " << swarm[i].pBest_fo << " : " << swarm[i].relBest << " : " << swarm[i].divBest << "\n";
 	// }*/
+
+	//cout << "Antes do retorno: " << gbest.fo << gbest.rel << gbest.div << "\n";
 
 	return gbest;
 }

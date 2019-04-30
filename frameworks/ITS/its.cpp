@@ -4,36 +4,96 @@ using namespace std;
 
 int MAX_RATING;
 
+float * pegaArgumentos (int argc, char * const argv[], int * algoritmo, string *predFileName, string *trainFileName, string *testFileName, string *featureFileName, string *output) {
+
+	float * args = (float*)calloc(5, sizeof(float));
+
+	if (strcmp(argv[2], "-a") == 0) {
+
+		if (strcmp(argv[1], "PSO") == 0) {
+			if (argc != 6)
+				cout << "Argumentos inválidos!\n";
+			else
+				*algoritmo = 1;
+		}
+		else if (strcmp(argv[1], "ITS") == 0) {
+			if (argc != 7)
+				cout << "Argumentos inválidos!\n";
+	    	else {
+			    *algoritmo = 2;
+	    	}
+		} else {
+			cout << "Algortímo inválido!\n";
+			exit(-1);
+		}
+
+		FILE * arq = fopen(argv[6], "r");
+
+		int temp;
+
+		if (strcmp(argv[1], "ITS") == 0) {
+			temp = fscanf (arq, "%f %f %f %f %f", &args[0], &args[1], &args[2], &args[3], &args[4]);
+		}
+		else if (strcmp(argv[1], "PSO") == 0) {
+			temp = fscanf (arq, "%f %f %f %f", &args[0], &args[1], &args[2], &args[3]);
+		}
+
+		fclose(arq);
+
+		*trainFileName = (string)argv[3] + "ratings_train.txt";
+    	*testFileName = (string)argv[3] + "ratings_test.txt";
+    	*featureFileName = (string)argv[3] + "featuresItems.txt";
+    	*predFileName = (string)argv[4];
+	    *output = (string)argv[5];
+
+	} else {
+	
+		if (strcmp(argv[1], "PSO") == 0) {
+			if (argc != 9)
+				cout << "Argumentos inválidos!\n";
+			else
+				*algoritmo = 1;
+		}
+		else if (strcmp(argv[1], "ITS") == 0) {
+			if (argc != 10)
+				cout << "Argumentos inválidos!\n";
+	    	else {
+			    *algoritmo = 2;
+			    args[4] = atoi(argv[9]); //Tamanho da lista tabu
+	    	}
+		} else {
+			cout << "Algortímo inválido!\n";
+			exit(-1);
+		}
+
+		*trainFileName = (string)argv[2] + "ratings_train.txt";
+	    *testFileName = (string)argv[2] + "ratings_test.txt";
+	    *featureFileName = (string)argv[2] + "featuresItems.txt";
+	    *predFileName = (string)argv[3];
+	    *output = (string)argv[4];
+
+	    args[0] = atoi(argv[5]); //Tamanho m da lista de rec.
+	    args[1] = atof(argv[6]); //Valor de alfa
+	    args[2] = atoi(argv[7]); //Tamanho da partícula/solução
+	    args[3] = atoi(argv[8]); //Tamanho da nuvem/num. de vizinhos
+		
+	}
+
+    return args;
+}
+
 int main(int argc, char **argv)
 {
 
-	string enderecoBase = argv[2];
-	string recommender = argv[3];
+//	string enderecoBase = argv[2];
+//	string recommender = argv[3];
 
-	//string predFileName = "../../Recommendations-Lists/CIAO/rec_itemKNN_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/CIAO/rec_userKNN_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/CIAO/rec_MostPopular_conv.txt";
-	string predFileName = "../../Recommendations-Lists/" + enderecoBase + "/rec_" + recommender + "_conv.txt";	
-	
-	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_itemKNN_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_userKNN_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_MostPopular_conv.txt";
-	//string predFileName = "../../Recommendations-Lists/ML-1M/rec_WRMF_conv.txt";
+	string predFileName, trainFileName, testFileName, featureFileName, output;
 
-	string trainFileName = "../../Datasets/" + enderecoBase + "/ratings_train.txt";
-	string testFileName = "../../Datasets/" + enderecoBase + "/ratings_test.txt";
-	string featureFileName = "../../Datasets/" + enderecoBase + "/featuresItems.txt";
-	
-	/*string trainFileName = "../../Datasets/ML-1M/ratings_train.txt";
-	string testFileName = "../../Datasets/ML-1M/ratings_test.txt";
-	string featureFileName = "../../Datasets/ML-1M/featuresItems.txt";*/
-	
-	int numPreds = 100;
-	//int swarmSize = 30;
-	int particleSize = 10;
-	float alfa = atof(argv[1]);
-	printf("%f\n", alfa);
 	int iter_max = 100;
+	int algoritmo = 0;
+
+	float * args = pegaArgumentos (argc, argv, &algoritmo, &predFileName, &trainFileName, &testFileName, &featureFileName, &output);
 
 	std::ifstream file;
 	srand(time(NULL));
@@ -47,9 +107,9 @@ int main(int argc, char **argv)
 	VectorOfUser hashFeature;
 	GBestOfUser gbestUser;
 
-	std::cout << "loading predictions...\n"
+	std::cout << "loading predictions...\n" << predFileName << "\n"
 			  << flush;
-	loadPred(predFileName, hashPred, userPred, numPreds);
+	loadPred(predFileName, hashPred, userPred, args[0]);
 
 	std::cout << "loading test data...\n"
 			  << flush;
@@ -73,42 +133,56 @@ int main(int argc, char **argv)
 
 	// Gera N arquivos de avaliação
 	//for(int i = 1; i <= 10; i++){
-		vector<PrintData> vecPrint;
+	vector<PrintData> vecPrint;
 
 //		cout << "Teste " << i << "\n";
-		//int userId = hashPred.begin()->first;
+	//int userId = hashPred.begin()->first;
 
-		for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++) {
-			int userId = itrUser->first;
-			gbestUser[userId] = tabuSearch(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, numPreds, alfa, iter_max, particleSize);
-			//cout << "Depois: " << gbestUser[userId].fo << gbestUser[userId].rel << gbestUser[userId].div << "\n";
-			PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId], hashFeature);
-			vecPrint.push_back(printData);
+	for (VectorOfUser::iterator itrUser = userPred.begin(); itrUser != userPred.end(); itrUser++) {
+		int userId = itrUser->first;
+		
+		switch (algoritmo){
+			case 1:
+				gbestUser[userId] = PSO_Discreet(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, args[0], args[1], iter_max, args[3], args[2]);
+				break;
+
+			case 2:
+				gbestUser[userId] = tabuSearch(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, args[0], args[1], iter_max, args[3], args[2], args[4]);
+				break;
+
+			default:
+				cout << "Algortímo inválido!\n";			
+				break;
 		}
 
-		//int userId = hashPred.begin()->first;
-		//for (int userId = 1; userId <= maxUserID; userId++){
+		//cout << "Depois: " << gbestUser[userId].fo << gbestUser[userId].rel << gbestUser[userId].div << "\n";
+		PrintData printData = findAccuracy(userId, trainData, testData, gbestUser[userId], hashFeature);
+		vecPrint.push_back(printData);
+	}
 
-		//}
+	//int userId = hashPred.begin()->first;
+	//for (int userId = 1; userId <= maxUserID; userId++){
 
-		//for (auto &&i : vecPrint)
-		//{
-		//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
-		//}
-
-		writeToFile(vecPrint, "../../Evaluations/ITS_Output/" + enderecoBase + "/alfa"+std::to_string(alfa)+"/" + recommender + "/eval.txt");
-		writeToFile(hashPred, userPred, gbestUser, "../../Evaluations/ITS_Output/" + enderecoBase + "/alfa"+std::to_string(alfa)+"/" + recommender + "/rec.txt");
 	//}
 
-	// print gbest of userId
-	// cout << "\n" << "Gbest of userId: " << userId << "\n";
-	// for(Element e: gbestUser[userId].element){
-	// 	cout << e.id << ":" << e.pos << " ";
-	// }
-	// cout << "\n";
-	// cout << "FO: " << gbestUser[userId].fo << "\n";
-	// cout << "REL: " << gbestUser[userId].rel << "\n";
-	// cout << "DIV: " << gbestUser[userId].div << "\n";
+	//for (auto &&i : vecPrint)
+	//{
+	//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
+	//}
+
+	writeToFile(vecPrint, output + "/eval.txt");
+	writeToFile(hashPred, userPred, gbestUser, output + "/rec.txt");
+
+	ofstream settingsFile(output + "/settings.txt");
+	if (settingsFile.is_open())
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			settingsFile << args[i] << "\n";
+			cout << args[i] << "\n";
+		}
+		settingsFile.close();
+	}
 
 	return 0;
 }
@@ -500,15 +574,12 @@ Solucao geraNovaSolucao (int particleSize, VectorOfUser &hashFeature, int numPre
 	return novaSolucao;
 }
 
-GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int iter_max, int particleSize)
+GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int iter_max, int numVizinhos, int particleSize, int tamTabu)
 {
 	int iter = 0;
 	int indiceTabu = 0;
 	GBest gbest;
 	GBest dBest;
-	int swarmSize = 0;
-	int tamTabu = 10;
-	int numVizinhos = 5;
 
 	Solucao solucaoAtual;
 	solucaoAtual.itens = (int*)malloc(particleSize*sizeof(int));
@@ -593,25 +664,14 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 			
 			if (solucaoAtual.fo > melhorSolucao.fo) {
 				//Atualiza a melhor
-				gbest.element.clear();
 				for (int i = 0; i < particleSize; i++) {
 					melhorSolucao.itens[i] = solucaoAtual.itens[i];
 					melhorSolucao.posicoes[i] = solucaoAtual.posicoes[i];
-					Element e(solucaoAtual.itens[i], i);
-					gbest.element.emplace_back(e);
 				}
 				melhorSolucao.fo = solucaoAtual.fo;
 				melhorSolucao.rel = solucaoAtual.rel;
-				melhorSolucao.div = solucaoAtual.div;
-
-				//Atualiza a partícula gbest
-				gbest.fo = melhorSolucao.fo;
-				gbest.rel = melhorSolucao.rel;
-				gbest.div = melhorSolucao.div;
-
-				//gbest.element = swarm[i].pBest;
-				//gbestPos = i;
-
+				melhorSolucao.div = solucaoAtual.div
+;
 			/*	printf("Melhor solução: %f\n", melhorSolucao.fo);
 				for (int i = 0; i < particleSize; i ++) {
 					printf("%d ", melhorSolucao.itens[i]);
@@ -623,26 +683,16 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 		iter++;
 	}
 
-	// cout << roulette1 << "\n";
-	// cout << roulette2 << "\n";
-	// cout << roulette3 << "\n";
-	// cout << rouletteError << "\n";
-
-	// cout << "\n--------------------------------------------------------------------\n";
-	// // print Pbests
-	// for(unsigned int i = 0; i < swarm.size(); i++){
-	// 	for(Element e: swarm[i].element){
-	// 		cout << e.id << ":" << e.pos << " ";
-	// 	}
-	// 	cout << "\n";
-	// 	for(Element e: swarm[i].pBest){
-	// 		cout << e.id << ":" << e.pos << " ";
-	// 	}
-	// 	cout << "\n";
-	// 	cout << i << " : " << swarm[i].pBest_fo << " : " << swarm[i].relBest << " : " << swarm[i].divBest << "\n";
-	// }*/
-
 	//cout << "Antes do retorno: " << gbest.fo << gbest.rel << gbest.div << "\n";
+
+	//Atualiza a partícula gbest
+	gbest.fo = melhorSolucao.fo;
+	gbest.rel = melhorSolucao.rel;
+	gbest.div = melhorSolucao.div;
+	for (int i = 0; i < particleSize; i++) {
+		Element e(melhorSolucao.itens[i], i);
+		gbest.element.emplace_back(e);
+	}
 
 	return gbest;
 }

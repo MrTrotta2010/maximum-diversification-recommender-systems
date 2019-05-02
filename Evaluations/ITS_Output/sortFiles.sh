@@ -1,14 +1,18 @@
-cd $2/alfa$1/$3/
-sudo rm acc.txt
-sort -f -r -k2 eval.txt > acc.txt
-chmod 777 acc.txt
-sudo rm acc_rel.txt
-sort -f -r -n -k3 eval.txt > acc_rel.txt
-chmod 777 acc_rel.txt
-sudo rm div.txt
-sort -f -r -k4 eval.txt > div.txt
-chmod 777 div.txt
-sudo rm div_rel.txt
-sort -f -r -k5 eval.txt > div_rel.txt
-chmod 777 div_rel.txt
-cd ../../
+
+teste=(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
+
+for t in "${teste[@]}" 
+do	
+	sudo rm $2/alfa$1/$3$t/acc.txt
+	sort -f -r -k2 $2/alfa$1/$3$t/eval.txt > $2/alfa$1/$3$t/acc.txt
+	chmod 777 $2/alfa$1/$3$t/acc.txt
+	sudo rm $2/alfa$1/$3$t/acc_rel.txt
+	sort -f -r -n -k3 $2/alfa$1/$3$t/eval.txt > $2/alfa$1/$3$t/acc_rel.txt
+	chmod 777 $2/alfa$1/$3$t/acc_rel.txt
+	sudo rm $2/alfa$1/$3$t/div.txt
+	sort -f -r -k4 $2/alfa$1/$3$t/eval.txt > $2/alfa$1/$3$t/div.txt
+	chmod 777 $2/alfa$1/$3$t/div.txt
+	sudo rm $2/alfa$1/$3$t/div_rel.txt
+	sort -f -r -k5 $2/alfa$1/$3$t/eval.txt > $2/alfa$1/$3$t/div_rel.txt
+	chmod 777 $2/alfa$1/$3$t/div_rel.txt
+done

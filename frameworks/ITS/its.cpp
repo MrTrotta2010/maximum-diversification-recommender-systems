@@ -644,6 +644,9 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 				novaSolucao.div = vizinho.div;
 			}
 
+			//free(vizinho.itens);
+			//free(vizinho.posicoes);
+
 		}
 
 		//Calcula-se a função objetiva de ambas as soluções e mantêm-se a melhor:
@@ -679,6 +682,9 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 				printf("\n\n");*/
 			}
 		}
+
+		//free(novaSolucao.itens);
+		//free(novaSolucao.posicoes);
 
 		iter++;
 	}

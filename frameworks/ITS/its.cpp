@@ -581,6 +581,8 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	GBest gbest;
 	GBest dBest;
 
+	//cout << numVizinhos << "\n";
+
 	Solucao solucaoAtual;
 	solucaoAtual.itens = (int*)malloc(particleSize*sizeof(int));
 	solucaoAtual.posicoes = (int*)malloc(particleSize*sizeof(int));
@@ -644,8 +646,8 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 				novaSolucao.div = vizinho.div;
 			}
 
-			//free(vizinho.itens);
-			//free(vizinho.posicoes);
+			free(vizinho.itens);
+			free(vizinho.posicoes);
 
 		}
 
@@ -683,8 +685,8 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 			}
 		}
 
-		//free(novaSolucao.itens);
-		//free(novaSolucao.posicoes);
+		free(novaSolucao.itens);
+		free(novaSolucao.posicoes);
 
 		iter++;
 	}
@@ -699,6 +701,11 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 		Element e(melhorSolucao.itens[i], i);
 		gbest.element.emplace_back(e);
 	}
+
+	free(melhorSolucao.itens);
+	free(melhorSolucao.posicoes);
+	free(solucaoAtual.itens);
+	free(solucaoAtual.posicoes);
 
 	return gbest;
 }

@@ -15,5 +15,5 @@ do
    	# Gera um arquivo de teste aleatório
    	#./randomTestITS ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$t/
    	# Roda o ITS com o arquivo de testes gerado
-   	./its ITS ../../Datasets/ML-1M/ ../../Recommendations-Lists/ML-1M/rec_userKNN_conv.txt ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$v 100 0.5 10 $v 100
+   	./its ITS ../../Datasets/ML-1M/ ../../Recommendations-Lists/ML-1M/rec_userKNN_conv.txt ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$v 100 0.5 10 $v 20
 done

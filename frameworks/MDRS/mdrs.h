@@ -88,6 +88,8 @@ struct PrintData
 
 int main(int argc, char **argv);
 
+int getopt(int argc, char * const argv[], const char *optstring) ;
+
 GBest PSO_Discreet(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int iter_max, int swarmSize, int particleSize);
 
 GBest path_Relink(GBest gbest, int gbestPos, GBest dbest, Swarm &swarm, VectorOfUser &hashFeature, int numPreds, float alfa);

@@ -38,6 +38,8 @@ float * pegaArgumentos (int argc, char * const argv[], int * algoritmo, string *
 			temp = fscanf (arq, "%f %f %f %f", &args[0], &args[1], &args[2], &args[3]);
 		}
 
+		temp++;
+
 		fclose(arq);
 
 		*trainFileName = (string)argv[3] + "ratings_train.txt";
@@ -89,11 +91,11 @@ int main(int argc, char **argv)
 //	string recommender = argv[3];
 
 	string predFileName, trainFileName, testFileName, featureFileName, output;
-
-	int iter_max = 100;
 	int algoritmo = 0;
 
 	float * args = pegaArgumentos (argc, argv, &algoritmo, &predFileName, &trainFileName, &testFileName, &featureFileName, &output);
+
+	int iter_max = args[4];
 
 	std::ifstream file;
 	srand(time(NULL));
@@ -170,6 +172,8 @@ int main(int argc, char **argv)
 	//	cout << i.userID << " " << i.acc << " " << i.accRel << " " << i.div << "\n";
 	//}
 
+	cout << "cu";
+
 	writeToFile(vecPrint, output + "/eval.txt");
 	writeToFile(hashPred, userPred, gbestUser, output + "/rec.txt");
 
@@ -183,6 +187,8 @@ int main(int argc, char **argv)
 		}
 		settingsFile.close();
 	}
+
+	free (args);
 
 	return 0;
 }
@@ -504,21 +510,21 @@ GBest PSO_Discreet(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature
 	return gbest;
 }
 
-bool estaNaSolucao (int item, Solucao solucao, int particleSize) {
+bool estaNaSolucao (int item, Solucao *solucao, int particleSize) {
 	for (int i = 0; i < particleSize; i++) {
-		if (solucao.itens[i] == item)
+		if (solucao->itens[i] == item)
 			return true;
 	}
 
 	return false;
 }
 
-bool estaNaListaTabu (Solucao solucao, int ** lista, int particleSize, int indiceMax) {
+bool estaNaListaTabu (Solucao *solucao, int **lista, int particleSize, int indiceMax) {
 	for (int i = 0; i < indiceMax; i++) {
 		int cont = 0;
 		for (int j = 0; j < particleSize; j++) {
 
-			if (solucao.itens[i] == lista[i][j])
+			if (solucao->itens[i] == lista[i][j])
 				cont++;
 		}
 		if (cont == particleSize)
@@ -528,7 +534,7 @@ bool estaNaListaTabu (Solucao solucao, int ** lista, int particleSize, int indic
 	return false;
 }
 
-Solucao geraNovaSolucao (int particleSize, VectorOfUser &hashFeature, int numPreds, Solucao solucaoAtual, int * espacoDeBusca, float alfa) {
+Solucao *geraNovaSolucao (Solucao *novaSolucao, int particleSize, VectorOfUser &hashFeature, int numPreds, Solucao *solucaoAtual, int * espacoDeBusca, float alfa) {
 
 	int indice2;
 	int indice3;
@@ -553,28 +559,51 @@ Solucao geraNovaSolucao (int particleSize, VectorOfUser &hashFeature, int numPre
 	//printf("gerou indice 4 = %d\n", indice4);
 		
 	//Trocamos posições na solução atual com posições no espaço de busca e geramos a nova solução
-	Solucao novaSolucao;
-	novaSolucao.itens = (int*)malloc(particleSize*sizeof(int));
-	novaSolucao.posicoes = (int*)malloc(particleSize*sizeof(int));
 
-	novaSolucao.itens[indice1] = espacoDeBusca[indice3];
-	novaSolucao.posicoes[indice1] = indice3;
-	novaSolucao.itens[indice2] = espacoDeBusca[indice4];
-	novaSolucao.posicoes[indice2] = indice4;
+	novaSolucao->itens[indice1] = espacoDeBusca[indice3];
+	novaSolucao->posicoes[indice1] = indice3;
+	novaSolucao->itens[indice2] = espacoDeBusca[indice4];
+	novaSolucao->posicoes[indice2] = indice4;
 
 	for (int i = 0; i < particleSize; i ++) {
 		if (i != indice1 && i != indice2) {
-			novaSolucao.itens[i] = solucaoAtual.itens[i];
-			novaSolucao.posicoes[i] = solucaoAtual.posicoes[i];
+			novaSolucao->itens[i] = solucaoAtual->itens[i];
+			novaSolucao->posicoes[i] = solucaoAtual->posicoes[i];
 		}
 	}
 
-	novaSolucao.fo = fitness(novaSolucao, hashFeature, numPreds, alfa, particleSize);
+	novaSolucao->fo = fitness(novaSolucao, hashFeature, numPreds, alfa, particleSize);
 
 	return novaSolucao;
 }
 
-GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int iter_max, int numVizinhos, int particleSize, int tamTabu)
+Solucao *inicializaSolucao (int particleSize) {
+
+	Solucao *solucao;
+	solucao = (Solucao*) malloc(sizeof(Solucao));
+	solucao->itens = (int*) malloc(particleSize*sizeof(int));
+	solucao->posicoes = (int*) malloc(particleSize*sizeof(int));
+	solucao->fo = -1;
+	solucao->rel = -1;
+	solucao->div = -1;
+
+	return solucao;
+
+}
+
+void imprimeSolucao (Solucao *solucao, int particleSize) {
+
+	printf ("\n\nSolução: \n\tItens: [");
+	for (int i=0; i < particleSize; i++) printf(" %d ", solucao->itens[i]);
+	printf ("]\n\tPosicoes: [");
+	for (int i=0; i < particleSize; i++) printf(" %d ", solucao->posicoes[i]);
+	cout << "]\n\tF.O.:"<<solucao->fo<<"Rel.:"<<solucao->rel<<"Div.:"<<solucao->div<<"\n\n";
+
+}
+
+GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData,
+	HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa,
+	int iter_max, int numVizinhos, int particleSize, int tamTabu)
 {
 	int iter = 0;
 	int indiceTabu = 0;
@@ -583,31 +612,27 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 
 	//cout << numVizinhos << "\n";
 
-	Solucao solucaoAtual;
-	solucaoAtual.itens = (int*)malloc(particleSize*sizeof(int));
-	solucaoAtual.posicoes = (int*)malloc(particleSize*sizeof(int));
-	Solucao melhorSolucao;
-	melhorSolucao.itens = (int*)malloc(particleSize*sizeof(int));
-	melhorSolucao.posicoes = (int*)malloc(particleSize*sizeof(int));
+	Solucao *solucaoAtual = inicializaSolucao(particleSize);
+	Solucao *melhorSolucao = inicializaSolucao(particleSize);
 
 	int espacoDeBusca[numPreds];
 
 	for (int i = 0; i < numPreds; i++) { //Criando o espaço de busca
 		espacoDeBusca[i] = userPred[userId][i];
 		if (i < particleSize) {
-			solucaoAtual.itens[i] = userPred[userId][i];//A solução inicial recebe os 10 primeiros itens da lista original
-			solucaoAtual.posicoes[i] = i; //É preciso salvar a posição de cada item na lista de recomendacoes
+			solucaoAtual->itens[i] = userPred[userId][i];//A solução inicial recebe os 10 primeiros itens da lista original
+			solucaoAtual->posicoes[i] = i; //É preciso salvar a posição de cada item na lista de recomendacoes
 		}
 	}
-	solucaoAtual.fo = fitness(solucaoAtual, hashFeature, numPreds, alfa, particleSize);
+	solucaoAtual->fo = fitness(solucaoAtual, hashFeature, numPreds, alfa, particleSize);
 
 	for (int i = 0; i < particleSize; i ++) {
-		melhorSolucao.itens[i] = solucaoAtual.itens[i]; //A melhor solução é a única conhecida
-		melhorSolucao.posicoes[i] = solucaoAtual.posicoes[i];
+		melhorSolucao->itens[i] = solucaoAtual->itens[i]; //A melhor solução é a única conhecida
+		melhorSolucao->posicoes[i] = solucaoAtual->posicoes[i];
 	}
-	melhorSolucao.fo = solucaoAtual.fo;
-	melhorSolucao.rel = solucaoAtual.rel;
-	melhorSolucao.div = solucaoAtual.div;
+	melhorSolucao->fo = solucaoAtual->fo;
+	melhorSolucao->rel = solucaoAtual->rel;
+	melhorSolucao->div = solucaoAtual->div;
 	
 	/*printf("Solução inicial: ");
 	for (int i = 0; i < particleSize; i ++) {
@@ -615,12 +640,14 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	}
 	puts("");
 */
-	int ** listaTabu = (int**)malloc(tamTabu * sizeof(int*)); //Crio a lista tabu vazia
+	int **listaTabu = new int *[tamTabu]; //Crio a lista tabu vazia
 	for (int i = 0; i < tamTabu; i++) {
-		listaTabu[i] = (int*)malloc(particleSize * sizeof(int));
+
+		listaTabu[i] = new int[particleSize];
+
 		for (int j = 0; j < particleSize; j++) {
 			if (i == indiceTabu)
-				listaTabu[i][j] = solucaoAtual.itens[i]; //Adiciona a lista 
+				listaTabu[i][j] = solucaoAtual->itens[i]; //Adiciona à lista 
 			else
 				listaTabu[i][j] = 0;
 		}
@@ -629,53 +656,53 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	while (iter < iter_max) {
 		//Gerando a nova solução
 
-		Solucao novaSolucao = geraNovaSolucao(particleSize, hashFeature, numPreds, solucaoAtual, espacoDeBusca, alfa); //Gera o vizinho inicial
+		Solucao *novaSolucao = inicializaSolucao(particleSize);
+		geraNovaSolucao(novaSolucao, particleSize, hashFeature, numPreds, solucaoAtual, espacoDeBusca, alfa); //Gera o vizinho inicial
 
 		//Gera os outros n-1 vizinhos
 		for (int i = 0; i < numVizinhos-1; i++) {
-			Solucao vizinho = geraNovaSolucao(particleSize,  hashFeature, numPreds, solucaoAtual, espacoDeBusca, alfa);
+			Solucao *vizinho = inicializaSolucao(particleSize);
+			geraNovaSolucao(vizinho, particleSize,  hashFeature, numPreds, solucaoAtual, espacoDeBusca, alfa);
+			imprimeSolucao(vizinho, particleSize);
 
-			if (!estaNaListaTabu(vizinho, listaTabu, particleSize, indiceTabu) && (vizinho.fo > novaSolucao.fo || estaNaListaTabu(novaSolucao, listaTabu, particleSize, indiceTabu))) {
+			if (!estaNaListaTabu(vizinho, listaTabu, particleSize, indiceTabu) && (vizinho->fo > novaSolucao->fo || estaNaListaTabu(novaSolucao, listaTabu, particleSize, indiceTabu))) {
 
 				for (int i = 0; i < particleSize; i++) { //Atualiza o melhor vizinho
-					novaSolucao.itens[i] = vizinho.itens[i];
-					novaSolucao.posicoes[i] = vizinho.posicoes[i];
+					novaSolucao->itens[i] = vizinho->itens[i];
+					novaSolucao->posicoes[i] = vizinho->posicoes[i];
 				}
-				novaSolucao.fo = vizinho.fo;
-				novaSolucao.rel = vizinho.rel;
-				novaSolucao.div = vizinho.div;
+				novaSolucao->fo = vizinho->fo;
+				novaSolucao->rel = vizinho->rel;
+				novaSolucao->div = vizinho->div;
 			}
-
-			free(vizinho.itens);
-			free(vizinho.posicoes);
-
 		}
 
 		//Calcula-se a função objetiva de ambas as soluções e mantêm-se a melhor:
-		if (!estaNaListaTabu(novaSolucao, listaTabu, particleSize, indiceTabu) && novaSolucao.fo > solucaoAtual.fo) {
+		if (!estaNaListaTabu(novaSolucao, listaTabu, particleSize, indiceTabu) && novaSolucao->fo > solucaoAtual->fo) {
 			for (int i = 0; i < particleSize; i++) {
-				solucaoAtual.itens[i] = novaSolucao.itens[i]; //Substitui
-				solucaoAtual.posicoes[i] = novaSolucao.posicoes[i];
-				listaTabu[indiceTabu][i] = solucaoAtual.itens[i]; //Insere novaSolucao na lista
+				solucaoAtual->itens[i] = novaSolucao->itens[i]; //Substitui
+				solucaoAtual->posicoes[i] = novaSolucao->posicoes[i];
+				listaTabu[indiceTabu][i] = solucaoAtual->itens[i]; //Insere novaSolucao na lista
 			}
-			solucaoAtual.fo = novaSolucao.fo;
-			solucaoAtual.rel = novaSolucao.rel;
-			solucaoAtual.div = novaSolucao.div;
+			solucaoAtual->fo = novaSolucao->fo;
+			solucaoAtual->rel = novaSolucao->rel;
+			solucaoAtual->div = novaSolucao->div;
 
 			if (indiceTabu == tamTabu-1)
 				indiceTabu = 0;
 			else
 				indiceTabu++;
 			
-			if (solucaoAtual.fo > melhorSolucao.fo) {
+			if (solucaoAtual->fo > melhorSolucao->fo) {
 				//Atualiza a melhor
 				for (int i = 0; i < particleSize; i++) {
-					melhorSolucao.itens[i] = solucaoAtual.itens[i];
-					melhorSolucao.posicoes[i] = solucaoAtual.posicoes[i];
+					melhorSolucao->itens[i] = solucaoAtual->itens[i];
+					melhorSolucao->posicoes[i] = solucaoAtual->posicoes[i];
 				}
-				melhorSolucao.fo = solucaoAtual.fo;
-				melhorSolucao.rel = solucaoAtual.rel;
-				melhorSolucao.div = solucaoAtual.div
+
+				melhorSolucao->fo = solucaoAtual->fo;
+				melhorSolucao->rel = solucaoAtual->rel;
+				melhorSolucao->div = solucaoAtual->div;
 ;
 			/*	printf("Melhor solução: %f\n", melhorSolucao.fo);
 				for (int i = 0; i < particleSize; i ++) {
@@ -685,8 +712,8 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 			}
 		}
 
-		free(novaSolucao.itens);
-		free(novaSolucao.posicoes);
+		free(novaSolucao->itens);
+		free(novaSolucao->posicoes);
 
 		iter++;
 	}
@@ -694,18 +721,18 @@ GBest tabuSearch(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, 
 	//cout << "Antes do retorno: " << gbest.fo << gbest.rel << gbest.div << "\n";
 
 	//Atualiza a partícula gbest
-	gbest.fo = melhorSolucao.fo;
-	gbest.rel = melhorSolucao.rel;
-	gbest.div = melhorSolucao.div;
+	gbest.fo = melhorSolucao->fo;
+	gbest.rel = melhorSolucao->rel;
+	gbest.div = melhorSolucao->div;
 	for (int i = 0; i < particleSize; i++) {
-		Element e(melhorSolucao.itens[i], i);
+		Element e(melhorSolucao->itens[i], i);
 		gbest.element.emplace_back(e);
 	}
 
-	free(melhorSolucao.itens);
-	free(melhorSolucao.posicoes);
-	free(solucaoAtual.itens);
-	free(solucaoAtual.posicoes);
+	free(melhorSolucao->itens);
+	free(melhorSolucao->posicoes);
+	free(solucaoAtual->itens);
+	free(solucaoAtual->posicoes);
 
 	return gbest;
 }
@@ -749,7 +776,7 @@ void calculate_fo(Particle &p, int userId, VectorOfUser &hashFeature, HashOfHash
 	}
 }
 
-float calculate_fo(Solucao &solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize)
+float calculate_fo(Solucao *solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize)
 {
 	// FO: (1- alfa)*REL + alfa*DIV
 	//REL: (n-pos)/n
@@ -761,21 +788,21 @@ float calculate_fo(Solucao &solucao, VectorOfUser &hashFeature, int numPreds, fl
 	// relevance
 	for (int i = 0; i < particleSize; i++)
 	{
-		relevance += (float)(numPreds - solucao.posicoes[i]) / numPreds;
+		relevance += (float)(numPreds - solucao->posicoes[i]) / numPreds;
 	}
 	relevance /= particleSize;
-	solucao.rel = relevance;
+	solucao->rel = relevance;
 
 	// diversify
 	// diversify = getILD(testData, p.element, hashSimilarity, itemRatings, userId, numPreds);
-	diversify = getDiv(solucao.itens, hashFeature, particleSize);
-	solucao.div = diversify;
+	diversify = getDiv(solucao->itens, hashFeature, particleSize);
+	solucao->div = diversify;
 
 	// fo
 	return fo = ((1 - alfa) * relevance) + (alfa * diversify);
 }
 
-float fitness (Solucao &solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize) {
+float fitness (Solucao *solucao, VectorOfUser &hashFeature, int numPreds, float alfa, int particleSize) {
 
 	float f = calculate_fo(solucao, hashFeature, numPreds, alfa, particleSize);
 

@@ -52,13 +52,14 @@ float * pegaArgumentos (int argc, char * const argv[], int * algoritmo, string *
 	
 		if (strcmp(argv[1], "PSO") == 0) {
 			if (argc != 9)
-				cout << "Argumentos inválidos!\n";
+				cout << "PSO: Argumentos insuficientes!\n";
 			else
 				*algoritmo = 1;
+			    args[4] = 100; //Número de iterações
 		}
 		else if (strcmp(argv[1], "ITS") == 0) {
 			if (argc != 10)
-				cout << "Argumentos inválidos!\n";
+				cout << "ITS: Argumentos insuficientes!\n";
 	    	else {
 			    *algoritmo = 2;
 			    args[4] = atoi(argv[9]); //Tamanho da lista tabu

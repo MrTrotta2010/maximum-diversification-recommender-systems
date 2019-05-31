@@ -64,6 +64,14 @@ float * pegaArgumentos (int argc, char * const argv[], int * algoritmo, string *
 			    *algoritmo = 2;
 			    args[4] = atoi(argv[9]); //Tamanho da lista tabu
 	    	}
+		}
+		else if (strcmp(argv[1], "Guloso") == 0) {
+			if (argc != 9)
+				cout << "Guloso: Argumentos insuficientes!\n";
+	    	else {
+			    *algoritmo = 3;
+			    args[4] = 0; //Tamanho da lista tabu
+	    	}
 		} else {
 			cout << "Algortímo inválido!\n";
 			exit(-1);
@@ -151,6 +159,10 @@ int main(int argc, char **argv)
 
 			case 2:
 				gbestUser[userId] = tabuSearch(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, args[0], args[1], iter_max, args[3], args[2], args[4]);
+				break;
+
+			case 3:
+				gbestUser[userId] = guloso(userId, userPred, hashFeature, testData, hashPred, hashSimilarity, itemRatings, args[0], args[1], iter_max, args[3], args[2]);
 				break;
 
 			default:
@@ -510,6 +522,44 @@ GBest PSO_Discreet(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature
 
 	return gbest;
 }
+GBest guloso(int userId, VectorOfUser &userPred, VectorOfUser &hashFeature, HashOfHashes &testData, HashOfHashes &hashPred, HashOfHashes &hashSimilarity, HashOfHashes &itemRatings, int numPreds, float alfa, int iter_max, int swarmSize, int particleSize)
+{
+	
+	int iter = 0;
+	GBest gbest;
+	GBest dBest;
+
+	Solucao * solucao = inicializaSolucao(particleSize);
+	int espacoDeBusca[numPreds];
+
+	for (int i = 0; i < numPreds; i++) { //Criando o espaço de busca
+		espacoDeBusca[i] = userPred[userId][i];
+	}
+
+	solucaoAtual->fo = fitness(solucaoAtual, hashFeature, numPreds, alfa, particleSize);
+
+	for (int i = 0; i < particleSize; i++) {
+
+		item = maxFitness(espacoDeBusca, hashFeature, numPreds, alfa, particleSize)
+
+	}
+
+	//Atualiza a partícula gbest
+	gbest.fo = melhorSolucao->fo;
+	gbest.rel = melhorSolucao->rel;
+	gbest.div = melhorSolucao->div;
+	for (int i = 0; i < particleSize; i++) {
+		Element e(melhorSolucao->itens[i], i);
+		gbest.element.emplace_back(e);
+	}
+
+	free(melhorSolucao->itens);
+	free(melhorSolucao->posicoes);
+	free(solucaoAtual->itens);
+	free(solucaoAtual->posicoes);
+
+	return gbest;
+}
 
 bool estaNaSolucao (int item, Solucao *solucao, int particleSize) {
 	for (int i = 0; i < particleSize; i++) {
@@ -584,9 +634,9 @@ Solucao *inicializaSolucao (int particleSize) {
 	solucao = (Solucao*) malloc(sizeof(Solucao));
 	solucao->itens = (int*) malloc(particleSize*sizeof(int));
 	solucao->posicoes = (int*) malloc(particleSize*sizeof(int));
-	solucao->fo = -1;
-	solucao->rel = -1;
-	solucao->div = -1;
+	solucao->fo = 0;
+	solucao->rel = 0;
+	solucao->div = 0;
 
 	return solucao;
 

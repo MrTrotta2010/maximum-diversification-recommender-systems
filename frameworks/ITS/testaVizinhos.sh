@@ -11,9 +11,9 @@ for v in "${vizinhos[@]}"
 do	
 	# echo "  Alpha: " $a >> logITS.txt    
 	# Cria o diretório de teste
-    mkdir ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$v
+    mkdir ../../Evaluations/ITS_Output/CIAO/alfa0.5/userKNN$v
    	# Gera um arquivo de teste aleatório
    	#./randomTestITS ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$t/
    	# Roda o ITS com o arquivo de testes gerado
-   	./its ITS ../../Datasets/ML-1M/ ../../Recommendations-Lists/ML-1M/rec_userKNN_conv.txt ../../Evaluations/ITS_Output/ML-1M/alfa0.5/userKNN$v 100 0.5 10 $v 20
+   	./its ITS ../../Datasets/CIAO/ ../../Recommendations-Lists/CIAO/rec_userKNN_conv.txt ../../Evaluations/ITS_Output/CIAO/alfa0.5/userKNN$v 100 0.5 10 $v 20
 done

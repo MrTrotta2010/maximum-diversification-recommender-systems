@@ -18,6 +18,6 @@ set output outputFile
 #nome de saida
 set ylabel "Genre Coverage" offset 1
 set xlabel "Usuários (%)" 
-plot inputPSO using ((column(0) / 6040) * 100):4 title titlePSO with line lw 10 lc "red",\
-    inputITS using ((column(0) / 6040) * 100):4 title titleITS with line lw 10 lc "blue",\
-    inputGuloso using ((column(0) / 6040) * 100):4 title titleGuloso with line lw 10 lc "yellow",\
+plot inputPSO using ((column(0) / users) * 100):4 title titlePSO with line lw 10 lc "red",\
+    inputITS using ((column(0) / users) * 100):4 title titleITS with line lw 10 lc "blue",\
+    inputGuloso using ((column(0) / users) * 100):4 title titleGuloso with line lw 10 lc "yellow",\

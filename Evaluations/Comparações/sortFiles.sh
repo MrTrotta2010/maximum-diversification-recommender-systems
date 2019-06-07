@@ -1,8 +1,10 @@
+#$1 é a base
+
 algoritmo=('PSO' 'ITS' 'Guloso')
 
 for a in "${algoritmo[@]}"
 do 
-	cd $a
+	cd $1/$a
 	sudo rm Prec.txt
 	sort -f -r -k2 eval.txt > Prec.txt
 	chmod 777 Prec.txt
@@ -15,5 +17,5 @@ do
 	sudo rm GenCov-Rel.txt
 	sort -f -r -k5 eval.txt > GenCov-Rel.txt
 	chmod 777 GenCov-Rel.txt
-	cd ..
+	cd ../../
 done

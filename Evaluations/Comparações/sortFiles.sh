@@ -1,6 +1,6 @@
 #$1 é a base
 
-algoritmo=('PSO' 'ITS' 'Guloso')
+algoritmo=('PSO' 'ITS' 'Guloso' 'GulosoNaive' 'userKNN')
 
 for a in "${algoritmo[@]}"
 do 
@@ -12,10 +12,10 @@ do
 	sort -f -r -n -k3 eval.txt > Prec-Rel.txt
 	chmod 777 Prec-Rel.txt
 	sudo rm GenCov.txt
-	sort -f -r -k4 eval.txt > GenCov.txt
+	sort -f -r -n -k4 eval.txt > GenCov.txt
 	chmod 777 GenCov.txt
 	sudo rm GenCov-Rel.txt
-	sort -f -r -k5 eval.txt > GenCov-Rel.txt
+	sort -f -r -n -k5 eval.txt > GenCov-Rel.txt
 	chmod 777 GenCov-Rel.txt
 	cd ../../
 done
